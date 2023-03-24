@@ -1,0 +1,79 @@
+[package]
+name = "crossbus"
+version = "0.0.1-a"
+edition = "2021"
+authors = ["hominee"]
+keywords = ["actor", "runtime-less", "no-std", "async", "crossbus"]
+categories = ["no-std", "wasm", "embedded", "asynchronous"]
+description = "A Platform-Less Runtime-Less Actor Computing Model"
+homepage = "https://crates.io/crates/crossbus"
+repository = "https://github.com/hominee/crossbus"
+documentation = "https://docs.rs/crossbus"
+readme = "README.md"
+
+[workspace]
+members = [
+    "derive",
+    "examples/*.rs",
+]
+exclude = ["examples/wasm32", "examples/no-std"]
+
+[dependencies]
+futures-core = { version="0.3.25", default-features = false }
+log = { version = "0.4.17", optional = true, default-features = false }
+pin-project-lite = { version="0.2.9", default-features = false }
+derive = { path = "./derive", version = "0.1.0", optional = true, default-features = false  }
+async-std = { version = "1.12.0", optional = true, default-features = false, features = ["alloc", "default"] }
+tokio = { version = "1.26.0", optional = true, default-features = false, features = ["rt",] }
+wasm-bindgen-futures = { version = "0.4.34", optional = true, default-features = false, features = [] }
+wasm-bindgen = { version = "0.2.84", optional = true, default-features = false, features = [] }
+js-sys = { version = "0.3.61", optional = true, default-features = false, features = [] }
+
+[features]
+core = []
+no-std = []
+std = ["derive"]
+derive = ["dep:derive"]
+rt = []
+time = []
+log = ["dep:log"]
+tokio = ["dep:tokio", "std", "rt"]
+async-std = ["dep:async-std", "std", "rt"]
+async-std-unstable = ["async-std/unstable"]
+wasm32 = ["dep:wasm-bindgen-futures", "dep:wasm-bindgen", "dep:js-sys", "rt"]
+unstable = []
+time-metric = []
+force-poll = []
+
+[dev-dependencies]
+futures = "0.3"
+
+[target.'cfg(not(any(target_arch = "wasm32", target_arch = "wasm64")))'.dev-dependencies]
+tokio = { version="1.26", features = ["full"] }
+simple_logger = "4.0.0"
+
+[target.'cfg(any(target_arch = "wasm32", target_arch = "wasm64"))'.dev-dependencies]
+wasm-bindgen-test = "0.3.0"
+wasm-logger = "0.2.0"
+
+[package.metadata.docs.rs]
+#features = ["core", "derive", "time", "std", "no-std", "time-metric", "force-poll", "unstable"]
+all-futures = true
+rustdoc-args = ["--cfg", "docsrs"]
+targets = ["x86_64-unknown-linux-gnu", "x86_64-apple-darwin", "x86_64-pc-windows-msvc", "i686-unknown-linux-gnu", "i686-pc-windows-msvc"]
+
+[[example]]
+name = "ring"
+path = "examples/ring.rs"
+required-features = ["log"]
+
+[[example]]
+name = "ping"
+path = "examples/ping.rs"
+required-features = ["log"]
+
+[[example]]
+name = "fibonacci"
+path = "examples/fibonacci.rs"
+required-features = ["log"]
+

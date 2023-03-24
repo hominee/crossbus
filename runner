@@ -1,0 +1,117 @@
+#!/bin/sh
+# A simple dev tool for crossbus.
+#
+# - `./runner t` to run all integration testing with different features
+# - `./runner c` to check the whole project with different features
+# - `./runner demo` to run all the examples 
+#
+
+cargo_test() {
+	echo "\n\nTesting with tokio: $1"
+	cargo t $1 --features tokio,derive,log,force-poll,unstable,time -- --nocapture &&
+	sleep 0.5
+	echo "\n\nTesting with async-std: $1"
+	cargo t $1 --features async-std,derive,log,force-poll,unstable,time -- --nocapture  &&
+	sleep 0.5
+	echo "\n\nTesting with wasm32: $1"
+	cargo t $1 --features wasm32,derive,log,force-poll,unstable,time --target wasm32-unknown-unknown 
+}
+
+cargo_test_timeout() {
+	echo "\n\nTesting with tokio with 5s timeout: $1"
+	timeout 5 cargo t $1 --features tokio,derive,log,force-poll,unstable,time -- --nocapture &&
+	sleep 0.5
+	echo "\n\nTesting with async-std with 5s timeout: $1"
+	timeout 5 cargo t $1 --features async-std,derive,log,force-poll,unstable,time -- --nocapture  &&
+	sleep 0.5
+	echo "\n\nTesting with wasm32 with 5s timeout: $1"
+	timeout 5 cargo t $1 --features wasm32,derive,log,force-poll,unstable,time --target wasm32-unknown-unknown 
+}
+
+cargo_example() {
+	echo "\n\nRun example with tokio: $1"
+	cargo r --example $1 --features tokio,log -- --nocapture &&
+	sleep 0.5
+	echo "\n\nRun example with async-std: $1"
+	cargo r --example $1 --features async-std,log -- --nocapture  
+}
+
+case $1 in 
+
+c | check) 
+echo "Checking without features ..."
+cargo c --features core &&
+sleep 1
+echo "\n\nChecking feature std ..."
+cargo c --features std &&
+sleep 1
+echo "\n\nChecking feature tokio ..."
+cargo c --features tokio &&
+sleep 1
+echo "\n\nChecking feature tokio with time ..."
+cargo c --features tokio,time,log &&
+sleep 1
+echo "\n\nChecking feature unstable tokio ..."
+cargo c --features tokio,force-poll,unstable,time-metric,time,log &&
+sleep 1
+echo "\n\nChecking feature async std ..."
+cargo c --features async-std &&
+sleep 1
+echo "\n\nChecking feature async std with time ..."
+cargo c --features async-std,time,log &&
+sleep 1
+echo "\n\nChecking feature unstable async std ..."
+cargo c --features async-std,force-poll,unstable,time-metric,time,log &&
+sleep 1
+echo "\n\nChecking feature wasm32 ..."
+cargo c --features wasm32 --target wasm32-unknown-unknown
+sleep 1
+echo "\n\nChecking feature wasm32 with time ..."
+cargo c --features wasm32,time,log --target wasm32-unknown-unknown
+sleep 1
+echo "\n\nChecking feature unstable wasm32 ..."
+cargo c --features wasm32,force-poll,unstable,time-metric,time,log --target wasm32-unknown-unknown
+;;
+
+t | test) 
+	[ -z  "$2" ] && {
+	cargo_test test_routine &&
+	sleep 0.5
+	cargo_test test_stream &&
+	sleep 0.5
+	cargo_test test_block  &&
+	sleep 0.5
+	cargo_test test_mstream &&
+	sleep 0.5
+	cargo_test_timeout test_delay 
+	echo "\n\t\033[0;32mCongratulations! all testings PASS with NO errors\033[0m\n"
+	exit 0
+	} || {
+		echo "test target: $2"
+		cargo_test $2
+	}
+;;
+
+demo | example)
+	cargo_example ping && 
+		sleep 0.5
+	cargo_example fibonacci && 
+		sleep 0.5 &&
+	cargo_example ring &&
+	cd examples/no-std && cargo r && cd ..
+	cd wasm32 && trunk serve 
+;;
+
+-h | --help | h | help)
+  echo "A simple dev tool for crossbus.\n
+ \033[0;32mrunner t\033[0m (or \033[0;32mtest\033[0m) to run all integration testing with different features
+ \033[0;32mrunner c\033[0m (or \033[0;32mcheck\033[0m) to check the whole project with different features
+ \033[0;32mrunner demo\033[0m (or \033[0;32mexample\033[0m) to run all the examples 
+ \033[0;32mrunner h\033[0m (or \033[0;32mhelp\033[0m) to print this help message"
+;;
+
+*)
+echo "Invalid command: $1"
+;;
+
+esac

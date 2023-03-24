@@ -1,0 +1,8 @@
+/target
+*.sw* 
+**/*.sw* 
+.*.sw* 
+**/.*.sw* 
+*.vim* 
+**/.vim* 
+*.lock 
