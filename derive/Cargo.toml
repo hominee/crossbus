@@ -1,6 +1,6 @@
 [package]
 name = "crossbus-derive"
-version = "0.0.1-a"
+version = "0.0.2-a"
 edition = "2021"
 description = "Macros for crossbus"
 readme = "README.md"
