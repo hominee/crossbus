@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ActingState","ActorState"],"struct":["Handle","Localizer"],"trait":["Actor","Future"],"type":["ActorId"]};
