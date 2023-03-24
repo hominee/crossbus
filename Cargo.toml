@@ -2,13 +2,14 @@
 name = "crossbus"
 version = "0.0.1-a"
 edition = "2021"
+license = "MIT"
 authors = ["hominee"]
 keywords = ["actor", "runtime-less", "no-std", "async", "crossbus"]
 categories = ["no-std", "wasm", "embedded", "asynchronous"]
 description = "A Platform-Less Runtime-Less Actor Computing Model"
 homepage = "https://crates.io/crates/crossbus"
 repository = "https://github.com/hominee/crossbus"
-documentation = "https://docs.rs/crossbus"
+documentation = "https://hominee.github.io/crossbus"
 readme = "README.md"
 
 [workspace]
@@ -22,7 +23,7 @@ exclude = ["examples/wasm32", "examples/no-std"]
 futures-core = { version="0.3.25", default-features = false }
 log = { version = "0.4.17", optional = true, default-features = false }
 pin-project-lite = { version="0.2.9", default-features = false }
-derive = { path = "./derive", version = "0.1.0", optional = true, default-features = false  }
+crossbus-derive = { path = "./derive", version = "0.0.1-a", optional = true, default-features = false  }
 async-std = { version = "1.12.0", optional = true, default-features = false, features = ["alloc", "default"] }
 tokio = { version = "1.26.0", optional = true, default-features = false, features = ["rt",] }
 wasm-bindgen-futures = { version = "0.4.34", optional = true, default-features = false, features = [] }
@@ -32,15 +33,15 @@ js-sys = { version = "0.3.61", optional = true, default-features = false, featur
 [features]
 core = []
 no-std = []
-std = ["derive"]
-derive = ["dep:derive"]
+std = []
+derive = ["dep:crossbus-derive"]
 rt = []
 time = []
 log = ["dep:log"]
-tokio = ["dep:tokio", "std", "rt"]
-async-std = ["dep:async-std", "std", "rt"]
+tokio = ["dep:tokio", "derive", "std", "rt"]
+async-std = ["dep:async-std", "derive", "std", "rt"]
 async-std-unstable = ["async-std/unstable"]
-wasm32 = ["dep:wasm-bindgen-futures", "dep:wasm-bindgen", "dep:js-sys", "rt"]
+wasm32 = ["dep:wasm-bindgen-futures", "dep:wasm-bindgen", "dep:js-sys", "derive", "rt"]
 unstable = []
 time-metric = []
 force-poll = []

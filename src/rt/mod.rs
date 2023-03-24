@@ -4,8 +4,8 @@
 //! built-in Runtime for execution,
 //!
 //! it **DOES NOT** mean CrossBus runs without runtime.
-//! in the contrary, CrossBus allow various runtimes and
-//! customized runtime.
+//! on the contrary, CrossBus allow various runtimes and
+//! customized runtime even a bare-bone executor.
 //!
 //! for convenience, CrossBus provides three common runtimes
 //! - bare tokio-based runtime (with feature **tokio**),
@@ -16,17 +16,6 @@
 //! - wasm-bindgen-futures-based runtime (with feature **wasm32**),
 //!   only `spawn_local` supported
 //!
-/*
- *#[cfg(all(feature = "tokio", feature = "async-std"))]
- *compile_error!("Choose at most one of `async-std` or `tokio` or `wasm32` features");
- *
- *#[cfg(all(feature = "wasm32", feature = "async-std"))]
- *compile_error!("Choose at most one of `async-std` or `tokio` or `wasm32` features");
- *
- *#[cfg(all(feature = "wasm32", feature = "tokio"))]
- *compile_error!("Choose at most one of `async-std` or `tokio` or `wasm32` features");
- *
- */
 #[cfg(feature = "async-std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "async-std")))]
 pub mod runtime_async_std;

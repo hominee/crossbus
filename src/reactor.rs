@@ -272,6 +272,7 @@ impl CoreFuture for Reactor {
 }
 
 #[cfg(all(feature = "wasm32", feature = "unstable", feature = "force-poll"))]
+#[allow(dead_code)]
 fn force_poll_wasm32(cx: &mut CoreContext<'_>) {
     // set timeout then wake
     // will do that
@@ -303,6 +304,7 @@ fn force_poll_wasm32(cx: &mut CoreContext<'_>) {
 }
 
 #[cfg(all(feature = "std", feature = "unstable", feature = "force-poll"))]
+#[allow(dead_code)]
 fn force_poll_std(cx: &mut CoreContext<'_>) {
     std::thread::sleep(std::time::Duration::from_millis(50));
     cx.waker().wake_by_ref();

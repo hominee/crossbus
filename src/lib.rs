@@ -1,8 +1,8 @@
 //#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![cfg_attr(not(feature = "std"), no_std)]
-// TODO: Talk about the features in details
 //! CrossBus is a platform-less runtime-less actor computing model
+//!
 //! - Runtime-less
 //! - Platform-less
 //! - Bare-Metal compatible
@@ -19,8 +19,8 @@ pub mod address;
 pub mod blocker;
 pub mod context;
 pub mod delayer;
-//#[cfg(not(feature = "rt"))]
-//#[cfg_attr(docsrs, doc(cfg(not(feature = "rt"))))]
+#[cfg(not(feature = "log"))]
+#[cfg_attr(docsrs, doc(cfg(not(feature = "log"))))]
 #[macro_use]
 pub mod log;
 pub mod message;
@@ -37,7 +37,7 @@ pub mod time;
 
 #[cfg(feature = "derive")]
 #[cfg_attr(docsrs, doc(cfg(feature = "derive")))]
-pub use derive::{main, Message};
+pub use crossbus_derive::{main, Message};
 
 pub mod prelude {
     //! Some common traits and types
@@ -52,7 +52,7 @@ pub mod prelude {
     pub use crate::{actor, address, context, message, reactor, register};
     #[cfg(feature = "derive")]
     #[cfg_attr(docsrs, doc(cfg(feature = "derive")))]
-    pub use derive::{main, Message};
+    pub use crossbus_derive::{main, Message};
     //pub use crate::blocker::{self, Blocker, BlockerState, Blocking, BlockingState};
     //pub use crate::delayer::{self, Delayer, DelayerState, Delaying, DelayingState};
     //pub use crate::message::{self, MStream, MStreamState, MStreaming, MStreamingState, Message};

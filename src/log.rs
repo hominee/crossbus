@@ -1,3 +1,5 @@
+//! disable logging out when feature not enabled
+//!
 #![allow(unused)]
 macro_rules! error {
     ($fmt:expr) => {

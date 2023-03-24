@@ -6,3 +6,4 @@
 *.vim* 
 **/.vim* 
 *.lock 
+todo.md

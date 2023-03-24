@@ -1,7 +1,14 @@
 [package]
-name = "derive"
-version = "0.1.0"
+name = "crossbus-derive"
+version = "0.0.1-a"
 edition = "2021"
+description = "Macros for crossbus"
+readme = "README.md"
+keywords = ["crossbus", "actors", "derive", "macro"]
+repository = "https://github.com/hominee/crossbus"
+documentation = "https://docs.rs/crossbus-derive"
+license = "MIT"
+
 
 [lib]
 proc-macro = true

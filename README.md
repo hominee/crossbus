@@ -35,8 +35,13 @@ with the concept that
 
 - **Platform-less by Runtime-less** 
 
-  take the advantage of runtime-less, crossbus is able to run 
-  across many platforms. 
+  take the advantage of runtime-less, crossbus is able to 
+  bypass annoyed the limitation of runtime implementor and system 
+  interface abstraction and go right straight way to manipulate 
+  task directly. Only a simple and dummy future executor(look at 
+   the [no-std example](https://github.com/hominee/crossbus/tree/master/examples/no-std)) is sufficed to run crossbus. This is the basic 
+  concept for crossbus to run across many platforms even 
+  without platforms. 
 
 - **Future-oriented Routine and Events**
 
