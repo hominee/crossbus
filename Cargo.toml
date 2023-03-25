@@ -1,6 +1,6 @@
 [package]
 name = "crossbus"
-version = "0.0.2-a"
+version = "0.0.3-a"
 edition = "2021"
 license = "MIT"
 authors = ["hominee"]
@@ -21,8 +21,8 @@ exclude = ["examples/wasm32", "examples/no-std"]
 
 [dependencies]
 futures-core = { version="0.3.25", default-features = false }
-log = { version = "0.4.17", optional = true, default-features = false }
 pin-project-lite = { version="0.2.9", default-features = false }
+log = { version = "0.4.17", optional = true, default-features = false }
 crossbus-derive = { path = "./derive", version = "0.0.2-a", optional = true, default-features = false  }
 async-std = { version = "1.12.0", optional = true, default-features = false, features = ["alloc", "default"] }
 tokio = { version = "1.26.0", optional = true, default-features = false, features = ["rt",] }
@@ -58,10 +58,9 @@ wasm-bindgen-test = "0.3.0"
 wasm-logger = "0.2.0"
 
 [package.metadata.docs.rs]
-#features = ["core", "derive", "time", "std", "no-std", "time-metric", "force-poll", "unstable"]
 all-futures = true
 rustdoc-args = ["--cfg", "docsrs"]
-targets = ["x86_64-unknown-linux-gnu", "x86_64-apple-darwin", "x86_64-pc-windows-msvc", "i686-unknown-linux-gnu", "i686-pc-windows-msvc"]
+targets = ["x86_64-unknown-linux-gnu"]
 
 [[example]]
 name = "ring"

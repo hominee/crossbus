@@ -82,7 +82,7 @@ To reduce code redundancy and speed up compilation, crossbus use feature flag to
 First of all, add `crossbus` to `Cargo.toml` of project
 ```toml 
 [dependencies]
-crossbus = "0.0.1-a"
+crossbus = "0.0.3-a"
 ```
 #### Types and Imports
 

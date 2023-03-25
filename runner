@@ -107,14 +107,15 @@ doc)
 	[ -z $CARGO_TARGET_DIR ] && {
 		rm -rf docs 
 		echo "copying compiled documentation from ./target"
-	  cp -ar ./target/doc/crossbus .
-		mv crossbus docs
+	  cp -ar ./target/doc .
+		mv doc docs
 	} || {
 		rm -rf docs 
 		echo "copying compiled documentation from ${CARGO_TARGET_DIR}"
-	  cp -ar $CARGO_TARGET_DIR/doc/crossbus .
-		mv crossbus docs
+	  cp -ar $CARGO_TARGET_DIR/doc .
+		mv doc docs
 	}
+  echo '<meta http-equiv="refresh" content="0; url=crossbus/index.html">' > docs/index.html
 ;;
 
 push)
