@@ -32,7 +32,7 @@ struct Msg(usize);
 impl Actor for Station {
     type Message = Msg;
 
-    fn create(_ctx: &mut Context<Self>) -> Self {
+    fn create(_: &mut Context<Self>) -> Self {
         Self {
             id: 0,
             pass: 0,

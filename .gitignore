@@ -7,3 +7,4 @@
 **/.vim* 
 *.lock 
 todo.md
+runner

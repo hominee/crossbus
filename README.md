@@ -21,8 +21,9 @@ with the concept that
 
   crossbus neither provide runtime for app execution 
   nor access the system interface abstraction. 
-  any runtime are allowed,  the system-provided /  
-  third-party's / that from `FFI`-binding all works.
+  no built-in runtime, but any runtime is allowed,  
+  the system-provided / third-party's / that from 
+  `FFI`-binding all work.
   Last but not least, even a bare-bone [noop-waker executor](https://docs.rs/futures-task/latest/futures_task/fn.noop_waker.html)
   can do.
 
@@ -31,10 +32,11 @@ with the concept that
 
 - **Bare-Metal Compatible**
 
-  no system libraries, no libc, and few upstream libraries
+  crossbus links to no system libraries, no libc, 
+  and a few upstream libraries
   enbale you run rust code on bare metal.
 
-  the [examples](https://github.com/hominee/crossbus/tree/master/examples/no-std)
+  the [examples](https://github.com/hominee/crossbus/tree/master/examples)
   folder contains some demos to use crossbus. 
 
 - **Platform-less by Runtime-less** 
@@ -50,8 +52,8 @@ with the concept that
 - **Future-oriented Routine and Events**
 
   the futures way to execute task is retained even 
-  without runtime thanks to rust. crossbus define a set of types 
-  and traits to allow you asynchronously manipulate tasks.
+  without runtime thanks to rust. crossbus defines a set of types 
+  and traits to allow asynchronous tasks manipulation.
 
 - **Real-time Execution Control**
 
@@ -191,7 +193,8 @@ impl Actor for CrossBus {
 
 #[main(runtime = tokio)]
 async fn main() {
-    let (addr, _) = CrossBus::start();
+    let (addr, id) = CrossBus::start();
+		println!("actor {} started", id);
     let sender = addr.sender();
     sender.send(Num(1)).unwrap();
     sender.send(Num(2)).unwrap();

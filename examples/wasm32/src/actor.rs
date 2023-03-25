@@ -12,11 +12,11 @@ enum Msg {
 impl Actor for Summer {
     type Message = Msg;
 
-    fn create(_ctx: &mut Context<Self>) -> Self {
+    fn create(_: &mut Context<Self>) -> Self {
         Self {}
     }
 
-    fn action(&mut self, msg: Self::Message, _ctx: &mut Context<Self>) {
+    fn action(&mut self, msg: Self::Message, _: &mut Context<Self>) {
         match msg {
             Msg::Ping(num) => {
                 let s = match ping_add(num as _) {

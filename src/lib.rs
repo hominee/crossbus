@@ -1,14 +1,50 @@
-//#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 //! CrossBus is a platform-less runtime-less actor computing model
 //!
-//! - Runtime-less
-//! - Platform-less
-//! - Bare-Metal compatible
-//! - Future-oriented routine and events
-//! - Real-time Execution Control
+//! ## Overview
+//! [CrossBus](https://github.com/hominee/crossbus) is an implementation of
+//! [Actor Computing Model](https://en.wikipedia.org/wiki/Actor_model),
+//! with the concept that
 //!
+//! - **Runtime-less**
+//!
+//!   crossbus neither provide runtime for app execution
+//!   nor access the system interface abstraction.
+//!   no built-in runtime, but any runtime is allowed,  
+//!   the system-provided / third-party's / that from
+//!   `FFI`-binding all work.
+//!   Last but not least, even a bare-bone [noop-waker executor](https://docs.rs/futures-task/latest/futures_task/fn.noop_waker.html)
+//!   can do.
+//!
+//!   runtime-located features like `concurrency`, `network` and `I/O`
+//!   are up to implementor.
+//!
+//! - **Bare-Metal Compatible**
+//!
+//!   crossbus links to no system libraries, no libc,
+//!   and a few upstream libraries
+//!   enbale you run rust code on bare metal.
+//!
+//! - **Platform-less by Runtime-less**
+//!
+//!   take the advantage of runtime-less, crossbus is able to
+//!   bypass annoyed the limitation of runtime implementor and system
+//!   interface abstraction and go right straight to manipulate
+//!   task directly.
+//!   This is the primary concept of crossbus to run across
+//!   many platforms or without platforms.
+//!
+//! - **Future-oriented Routine and Events**
+//!
+//!   the futures way to execute task is retained even
+//!   without runtime thanks to rust. crossbus defines a set of types
+//!   and traits to allow asynchronous tasks manipulation.
+//!
+//! - **Real-time Execution Control**
+//!
+//!   crossbus provides a handle with which more routines and events
+//!   can be intercepted for each spawned future.
 //!
 
 #[macro_use]

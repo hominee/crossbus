@@ -117,7 +117,7 @@ impl<A: Actor> DelayIndicator<A> {
 ///
 pub trait Delaying<A: Actor> {
     /// called before the Delayer
-    fn started(&mut self, _ctx: &mut Context<A>) {}
+    fn started(&mut self, _: &mut Context<A>) {}
 
     /// change the state of the Delayer to
     /// abort/emit/continue the Delayer when
@@ -125,18 +125,18 @@ pub trait Delaying<A: Actor> {
     ///
     /// Real-Time control or more elaborated
     /// execution could be achieved right here
-    fn state(&mut self, _ctx: &mut Context<A>) -> DelayingState {
+    fn state(&mut self, _: &mut Context<A>) -> DelayingState {
         DelayingState::Continue
     }
 
     /// called before the Delayer get aborted
-    fn aborted(&mut self, _ctx: &mut Context<A>) {}
+    fn aborted(&mut self, _: &mut Context<A>) {}
 
     /// called after the Delayer emitted in advance
-    fn emitted(&mut self, _ctx: &mut Context<A>) {}
+    fn emitted(&mut self, _: &mut Context<A>) {}
 
     /// called after the Delayer finished
-    fn finished(&mut self, _ctx: &mut Context<A>) {}
+    fn finished(&mut self, _: &mut Context<A>) {}
 }
 
 impl<A: Actor> Delayer<A> {

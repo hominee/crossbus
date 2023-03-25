@@ -1,4 +1,4 @@
-//! Actor lifecycle Manager
+//! Actor lifecycle Management
 //!
 extern crate alloc;
 
@@ -51,8 +51,8 @@ impl Register {
         unsafe { &REGISTER }
     }
 
-    /// push an actor into REGISTER and
-    /// return its guarded underlying actor
+    /// push an actor into `REGISTER` and
+    /// return its underlying guarded actor
     pub fn push<A: Actor>(item: ActorRegister) -> ActorGuard<A> {
         // the underlying actor is required to be downcasted;
         let data = item.downcast_ref_cell();
@@ -69,8 +69,17 @@ impl Register {
     }
 
     /// get an actor register by id
+    ///
+    /// use [iter](Self::iter) instead if
+    /// `message_id` or actor `type_id`
+    /// is involved
     pub fn get(id: usize) -> Option<&'static ActorRegister> {
         Self::as_ref().iter().find(|reg| reg.id() == id)
+    }
+
+    /// iterate actor(s) register
+    pub fn iter() -> core::slice::Iter<'static, ActorRegister> {
+        Self::as_ref().iter()
     }
 
     /// clear closed actor as long as
@@ -118,13 +127,14 @@ impl Register {
 /// future use (Create/Read/Update/Delete)
 ///
 /// each record contains
-/// - `id`: `usize`
+/// - `id`: `usize`, the unique identifier of the actor.
 /// - `actor`: the type implemented [`Acotr`](Actor) trait
-/// - `sealed`: `AtomicBool`, marker whether the actor is mutably borrowed or not
-/// - `type_id`: the type id of the type implemented [`Acotr`](Actor) trait
+/// - `sealed`: `AtomicBool`, status marker indicates the actor is mutably borrowed or not
+/// - `type_id`: the type id of [`Acotr`](Actor) trait implementor
 /// - `message_id`: the type id of the type implemented [`Message`](crate::message::Message) trait
-/// - `name`: String
-/// - `closed`: `AtomicBool`, marker whether the actor is closed or not
+/// - `name`: `String`, the name of the registered actor, the default format is `Acotr-{id}`,
+/// customize it with [set_name](ActorRegister::set_name).
+/// - `closed`: `AtomicBool`, status marker indicates the actor is closed or not
 #[derive(Debug)]
 pub struct ActorRegister {
     id: usize,
@@ -136,7 +146,7 @@ pub struct ActorRegister {
     closed: AtomicBool,
 }
 
-/// An guardian created when Actor gets registered
+/// An guardian created when an Actor gets registered
 pub struct ActorGuard<A: Actor> {
     inner: Arc<UnsafeCell<A>>,
     sealed: Arc<AtomicBool>,
@@ -145,7 +155,7 @@ pub struct ActorGuard<A: Actor> {
 impl<A: Actor> fmt::Debug for ActorGuard<A> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("ActorGuard<_>")
-            .field("inner", &"UnsafeCell<Actor>")
+            .field("inner", &"Arc<UnsafeCell<Actor>>")
             .field("sealed", &self.sealed)
             .finish()
     }

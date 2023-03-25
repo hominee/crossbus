@@ -128,7 +128,7 @@ impl stream::Stream for St {
 impl Actor for Summer {
     type Message = ();
 
-    fn create(_ctx: &mut Context<Self>) -> Self {
+    fn create(_: &mut Context<Self>) -> Self {
         Self {
             sum: 0,
             handle: None,
@@ -173,11 +173,11 @@ impl Actor for Summer {
         }
     }
 
-    fn action(&mut self, _msg: Self::Message, _ctx: &mut Context<Self>) {
+    fn action(&mut self, _msg: Self::Message, _: &mut Context<Self>) {
         log::error!("message should not be here, and handled by Stream::action");
     }
 
-    fn stopped(&mut self, _ctx: &mut Context<Self>) {
+    fn stopped(&mut self, _: &mut Context<Self>) {
         // restart the Actor to spawn a new
     }
 }
@@ -185,7 +185,7 @@ impl Actor for Summer {
 use crossbus::stream::{StreamState, StreamingState};
 
 impl Stream<Num> for Summer {
-    fn started(&mut self, _ctx: &mut Context<Self>) {
+    fn started(&mut self, _: &mut Context<Self>) {
         let now = get_now();
         // the stream is started
         self.start_at.replace(now);
@@ -245,13 +245,13 @@ impl Stream<Num> for Summer {
         StreamingState::Continue
     }
 
-    fn action(&mut self, msg: Num, _ctx: &mut Context<Self>) {
+    fn action(&mut self, msg: Num, _: &mut Context<Self>) {
         self.sum += msg.0;
         self.counter += 1;
         log::info!("current sum: {}", self.sum);
     }
 
-    fn finished(&mut self, _ctx: &mut Context<Self>) {
+    fn finished(&mut self, _: &mut Context<Self>) {
         log::info!("stream finished, whole sum: {}", self.sum);
     }
 }

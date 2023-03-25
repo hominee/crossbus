@@ -1,4 +1,6 @@
-//! Reactor is the executor and manager of all actors, serves
+//! Reactor is the executor and manager of all actors,
+//!
+//! serves as
 //! - Actor Runner Schedule and Execution
 //! - Actor Register maintenance and update
 //!
@@ -129,7 +131,8 @@ pub struct Reactor {
 }
 
 impl Reactor {
-    /// get the static reference of REACTOR
+    /// get the reference of global
+    /// static `REACTOR`
     pub fn new() -> &'static Self {
         // **Safety**: With `INIT` guard, we assure that
         // REACTOR is initialized and its inner
@@ -139,7 +142,7 @@ impl Reactor {
         unsafe { &REACTOR }
     }
 
-    /// push a pair to the queue cache
+    /// push a pair to the cache queue
     pub fn push(future: ReactorPair) {
         if !QUEUENULLINIT.load(Ordering::Acquire) {
             REACTORCACHE.assume_init();
@@ -150,10 +153,9 @@ impl Reactor {
 
     /// drive all reactor's futures into completion
     ///
-    /// **Safety**: as the inner data is guarded with
-    /// `REACTORSEAL`, any mutable actions happens
-    /// will trigger the guardian locked
-    ///
+    // **Safety**: as the inner data is guarded with
+    // `REACTORSEAL`, any mutable actions happens
+    // will trigger the guardian locked
     pub async fn as_future() {
         unsafe { &mut REACTOR }.await
     }
@@ -173,8 +175,8 @@ impl Reactor {
         unsafe { REACTOR.inner.len() }
     }
 
-    // process reactor cache
-    // - poll reacting orders from cache
+    /// process reactor cache
+    /// - poll reacting orders from cache
     fn epoll(inner: &mut Vec<ReactorPair>) {
         while let Some(order) = unsafe { REACTORCACHE.pop() } {
             match order {
@@ -265,7 +267,7 @@ impl CoreFuture for Reactor {
             log::trace!("Wake future in reactor");
             cx.waker().wake_by_ref();
         } else {
-            log::error!("Unfinished Future HANGING INDEFINITELY.\nFuture is **NOT WAKED** after `Poll::Pending` returned");
+            log::error!("Unfinished Future HANGING INDEFINITELY. Future is **NOT WAKED** after `Poll::Pending` returned");
         }
         Poll::Pending
     }

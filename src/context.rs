@@ -908,8 +908,17 @@ impl<A: Actor> ContextRunner<A> {
 unsafe impl<A: Actor> Send for ContextRunner<A> {}
 unsafe impl<A: Actor> Sync for ContextRunner<A> {}
 
-// NOTE Modify the poll routine
-// after the actor is not alive
+/// **Safety**: no technical guarantee that only
+/// one mutable access when mutably borrow
+/// `ActorGuard<A>` in `ContextRunner`.
+/// but so far it is safe to use.
+/// Since mutation only happens in `poll` and its
+/// called-functions inside, and at most one mutable
+/// access happens there.
+//
+// NOTE for future development, maybe seal the
+// ActorGuard before mutable borrowing
+// for more complex logic
 impl<A> CoreFuture for ContextRunner<A>
 where
     A: Actor,

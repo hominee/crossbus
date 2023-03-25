@@ -68,12 +68,12 @@ impl ActorState {
 
 static HANDLECOUNT: AtomicUsize = AtomicUsize::new(1);
 
-/// An unique identity
+/// An unique identifier
 ///
 /// **NOTE** that if the inner id is `0`
 /// it means that the returned
-/// handle is not valid, and the
-/// corresponding future not spawned
+/// handle is **INVALID**, and the
+/// corresponding task not spawned
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Handle(usize);
 
@@ -245,7 +245,10 @@ pub trait Actor: Sized + Unpin + 'static {
     /// is returned
     /// and actor will be stopped if `Resume` is not returned
     /// when it is in stopping phase
-    fn state(&mut self, _ctx: &mut Context<Self>) -> ActingState {
+    ///
+    /// Real-Time control or more elaborated
+    /// execution could be achieved right here
+    fn state(&mut self, _: &mut Context<Self>) -> ActingState {
         ActingState::Continue
     }
 

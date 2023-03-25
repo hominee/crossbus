@@ -13,11 +13,11 @@ impl Message for Num {}
 impl Actor for Summer {
     type Message = Num;
 
-    fn create(_ctx: &mut Context<Self>) -> Self {
+    fn create(_: &mut Context<Self>) -> Self {
         Self { sum: 0 }
     }
 
-    fn action(&mut self, msg: Self::Message, _ctx: &mut Context<Self>) {
+    fn action(&mut self, msg: Self::Message, _: &mut Context<Self>) {
         self.sum += msg.0;
         log::debug!("current sum: {}", self.sum);
     }

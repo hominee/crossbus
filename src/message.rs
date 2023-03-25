@@ -59,14 +59,14 @@ where
     Self: Actor,
 {
     /// called before the actor emit the first Strem Item
-    fn started(&mut self, _ctx: &mut Context<Self>) {}
+    fn started(&mut self, _: &mut Context<Self>) {}
 
     /// change the state of stream
     /// to abort/pause/resume the stream accordingly
     ///
     /// Real-Time control or more elaborated
     /// execution could be achieved right here
-    fn state(&mut self, _ctx: &mut Context<Self>) -> MStreamingState {
+    fn state(&mut self, _: &mut Context<Self>) -> MStreamingState {
         MStreamingState::Continue
     }
 
@@ -85,16 +85,16 @@ where
     }
 
     /// called after the actor aborts the stream
-    fn aborted(&mut self, _ctx: &mut Context<Self>) {}
+    fn aborted(&mut self, _: &mut Context<Self>) {}
 
     /// called after the actor pause the stream
-    fn paused(&mut self, _ctx: &mut Context<Self>) {}
+    fn paused(&mut self, _: &mut Context<Self>) {}
 
     /// called after the actor resume the stream
-    fn resumed(&mut self, _ctx: &mut Context<Self>) {}
+    fn resumed(&mut self, _: &mut Context<Self>) {}
 
     /// called after the actor send the last Strem Item
-    fn finished(&mut self, _ctx: &mut Context<Self>) {}
+    fn finished(&mut self, _: &mut Context<Self>) {}
 }
 
 /// Indicator to direct the MStreaming

@@ -57,7 +57,7 @@ where
     A: Actor,
 {
     /// called before the blocker get started
-    fn started(&mut self, _ctx: &mut Context<A>) {}
+    fn started(&mut self, _: &mut Context<A>) {}
 
     /// Runtime control of the `Blcoker`
     /// to abort the actor.
@@ -65,15 +65,15 @@ where
     /// Real-Time control or more elaborated
     /// execution could be achieved right here
     ///
-    fn state(&mut self, _ctx: &mut Context<A>) -> BlockingState {
+    fn state(&mut self, _: &mut Context<A>) -> BlockingState {
         BlockingState::Continue
     }
 
     /// called before the blocker get aborted
-    fn aborted(&mut self, _ctx: &mut Context<A>) {}
+    fn aborted(&mut self, _: &mut Context<A>) {}
 
     /// called after the blocker successfully finished
-    fn finished(&mut self, _ctx: &mut Context<A>) {}
+    fn finished(&mut self, _: &mut Context<A>) {}
 }
 
 /// block the actor (or make the actor waiting)

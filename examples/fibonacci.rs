@@ -10,11 +10,11 @@ struct Fibo(u32);
 impl Actor for Summer {
     type Message = Fibo;
 
-    fn create(_ctx: &mut Context<Self>) -> Self {
+    fn create(_: &mut Context<Self>) -> Self {
         Self { item: 0 }
     }
 
-    fn action(&mut self, msg: Self::Message, _ctx: &mut Context<Self>) {
+    fn action(&mut self, msg: Self::Message, _: &mut Context<Self>) {
         match fibo(msg.0 as _) {
             Ok(item) => {
                 self.item = item;
