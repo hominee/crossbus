@@ -102,27 +102,6 @@ demo | example)
 	cd wasm32 && trunk serve 
 ;;
 
-doc)
-	RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --no-deps --all-features
-	[ -z $CARGO_TARGET_DIR ] && {
-		rm -rf docs 
-		echo "copying compiled documentation from ./target"
-	  cp -ar ./target/doc .
-		mv doc docs
-	} || {
-		rm -rf docs 
-		echo "copying compiled documentation from ${CARGO_TARGET_DIR}"
-	  cp -ar $CARGO_TARGET_DIR/doc .
-		mv doc docs
-	}
-  echo '<meta http-equiv="refresh" content="0; url=crossbus/index.html">' > docs/index.html
-;;
-
-push)
-  git push -u org master 
-  git push -u origin master 
-;;
-
 -h | --help | h | help)
   echo "A simple dev tool for crossbus.\n
  \033[0;32mrunner t\033[0m (or \033[0;32mtest\033[0m) to run all integration testing with different features
