@@ -40,11 +40,6 @@ impl<T> Spawning<T, JoinHandle<T>, T> for Runtime {
         //block_on(fut)
     }
 
-    #[cfg(all(feature = "unstable", feature = "async-std-unstable"))]
-    #[cfg_attr(
-        docsrs,
-        doc(cfg(all(feature = "unstable", feature = "async-std-unstable")))
-    )]
     fn spawn_local<F>(fut: F) -> JoinHandle<T>
     where
         F: CoreFuture<Output = T> + 'static,
@@ -52,15 +47,5 @@ impl<T> Spawning<T, JoinHandle<T>, T> for Runtime {
     {
         log::debug!("Spawn local future");
         Builder::new().local(fut).expect("Spawn task failed")
-    }
-
-    #[cfg(not(feature = "async-std-unstable"))]
-    #[cfg_attr(docsrs, doc(cfg(not(feature = "async-std-unstable"))))]
-    fn spawn_local<F>(_: F) -> JoinHandle<T>
-    where
-        F: CoreFuture<Output = T> + 'static,
-        F::Output: 'static,
-    {
-        unimplemented!("spawn local is available when unstable enabled")
     }
 }

@@ -13,7 +13,7 @@
 </div>
 
 ## Overview
-[CrossBus](https://github.com/hominee/crossbus) is implementation of
+[CrossBus](https://github.com/hominee/crossbus) is an implementation of
 [Actor Computing Model](https://en.wikipedia.org/wiki/Actor_model), 
 with the concept that 
 
@@ -21,13 +21,17 @@ with the concept that
 
   crossbus neither provide runtime for app execution 
   nor access the system interface abstraction. 
+  any runtime are allowed,  the system-provided /  
+  third-party's / that from `FFI`-binding all works.
+  Last but not least, even a bare-bone [noop-waker executor](https://docs.rs/futures-task/latest/futures_task/fn.noop_waker.html)
+  can do.
 
-  runtime-located features like `concurrency` or `I/O`
+  runtime-located features like `concurrency`, `network` and `I/O`
   are up to implementor. 
 
 - **Bare-Metal Compatible**
 
-  no system libraries, no libc, and just a few upstream libraries
+  no system libraries, no libc, and few upstream libraries
   enbale you run rust code on bare metal.
 
   the [examples](https://github.com/hominee/crossbus/tree/master/examples/no-std)
@@ -37,17 +41,17 @@ with the concept that
 
   take the advantage of runtime-less, crossbus is able to 
   bypass annoyed the limitation of runtime implementor and system 
-  interface abstraction and go right straight way to manipulate 
+  interface abstraction and go right straight to manipulate 
   task directly. Only a simple and dummy future executor(look at 
-   the [no-std example](https://github.com/hominee/crossbus/tree/master/examples/no-std)) is sufficed to run crossbus. This is the basic 
-  concept for crossbus to run across many platforms even 
+   the [no-std example](https://github.com/hominee/crossbus/tree/master/examples/no-std)) is sufficed to run crossbus. This is the primary 
+  concept of crossbus to run across many platforms or 
   without platforms. 
 
 - **Future-oriented Routine and Events**
 
   the futures way to execute task is retained even 
-  without runtime with rust. crossbus define a set of types 
-  and traits that follow style during execution.
+  without runtime thanks to rust. crossbus define a set of types 
+  and traits to allow you asynchronously manipulate tasks.
 
 - **Real-time Execution Control**
 
@@ -55,7 +59,7 @@ with the concept that
   can be fulfilled for each spawned future.
 
 **Currently crossbus is in its alpha version, all APIs and archtecture 
-is not stable yet.**
+is not stable yet, and evolves very quickly.**
 
 ## Documentation
 
@@ -76,13 +80,14 @@ To reduce code redundancy and speed up compilation, crossbus use feature flag to
 - `async-std`: convenience to use async-std-based runtime  
 - `wasm32`: convenience to use wasm-bindgen-futures-based runtime 
 - `unstable`: marker for unstable feature
-- `force-poll`: it is `unstable`, `std`/`time`-dependent to periodically wakeup future polling
+- `time-metric`: enabled with `unstable` and `time`, numerical timing feature 
+- `force-poll`: enabled with `unstable`, `time`-dependent to periodically wakeup future polling
 
 ## How to Use 
 First of all, add `crossbus` to `Cargo.toml` of project
 ```toml 
 [dependencies]
-crossbus = "0.0.3-a"
+crossbus = "0.0.4-a"
 ```
 #### Types and Imports
 
@@ -128,17 +133,11 @@ Okay, How the Summer respond when the message comes?
 we should tell crossbus.
 
 ```rust 
-...
-impl Actor for CrossBus {
-    type Message = Num;
-...
-
+    ...
     fn action(&mut self, msg: Self::Message, ctx: &mut Context<Self>) {
         self.sum += msg.0;
     }
-...
-
-}
+    ...
 
 ```
 So far so good, but how to obtain the final result 
@@ -147,18 +146,11 @@ it can be available when the actor process all messages
 and stopped, right? 
 
 ```rust 
-...
-impl Actor for CrossBus {
-    type Message = Num;
-...
-
+    ...
     fn stopped(&mut self, _: &mut Context<Self>) {
         println!("final sum: {}", self.sum);
     }
-...
-
-}
-
+    ...
 ```
 
 Done. Congratulation! You just knew the basic routine to use crossbus.
@@ -191,8 +183,8 @@ impl Actor for CrossBus {
     }
 
     fn stopped(&mut self, _: &mut Context<Self>) {
-        assert_eq!(self.sum, 7);
         println!("final sum: {}", self.sum);
+        assert_eq!(self.sum, 7);
     }
 
 }

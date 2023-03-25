@@ -1,6 +1,6 @@
 [package]
 name = "crossbus"
-version = "0.0.3-a"
+version = "0.0.4-a"
 edition = "2021"
 license = "MIT"
 authors = ["hominee"]
@@ -24,7 +24,7 @@ futures-core = { version="0.3.25", default-features = false }
 pin-project-lite = { version="0.2.9", default-features = false }
 log = { version = "0.4.17", optional = true, default-features = false }
 crossbus-derive = { path = "./derive", version = "0.0.2-a", optional = true, default-features = false  }
-async-std = { version = "1.12.0", optional = true, default-features = false, features = ["alloc", "default"] }
+async-std = { version = "1.12.0", optional = true, default-features = false, features = ["alloc", "default", "unstable"] }
 tokio = { version = "1.26.0", optional = true, default-features = false, features = ["rt",] }
 wasm-bindgen-futures = { version = "0.4.34", optional = true, default-features = false, features = [] }
 wasm-bindgen = { version = "0.2.84", optional = true, default-features = false, features = [] }
@@ -40,7 +40,6 @@ time = []
 log = ["dep:log"]
 tokio = ["dep:tokio", "derive", "std", "rt"]
 async-std = ["dep:async-std", "derive", "std", "rt"]
-async-std-unstable = ["async-std/unstable"]
 wasm32 = ["dep:wasm-bindgen-futures", "dep:wasm-bindgen", "dep:js-sys", "derive", "rt"]
 unstable = []
 time-metric = []
@@ -58,9 +57,9 @@ wasm-bindgen-test = "0.3.0"
 wasm-logger = "0.2.0"
 
 [package.metadata.docs.rs]
-all-futures = true
+all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
-targets = ["x86_64-unknown-linux-gnu"]
+targets = ["x86_64-unknown-linux-gnu", "x86_64-apple-darwin", "x86_64-pc-windows-msvc", "i686-unknown-linux-gnu", "i686-pc-windows-msvc"]
 
 [[example]]
 name = "ring"
