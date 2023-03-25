@@ -58,7 +58,7 @@ with the concept that
 - **Real-time Execution Control**
 
   crossbus provides a handle with which more routines and events
-  can be fulfilled for each spawned future.
+  can be intercepted for each spawned task.
 
 **Currently crossbus is in its alpha version, all APIs and archtecture 
 is not stable yet, and evolves very quickly.**

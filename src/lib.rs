@@ -44,7 +44,7 @@
 //! - **Real-time Execution Control**
 //!
 //!   crossbus provides a handle with which more routines and events
-//!   can be intercepted for each spawned future.
+//!   can be intercepted for each spawned task.
 //!
 
 #[macro_use]
