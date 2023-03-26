@@ -161,7 +161,7 @@ impl<A: Actor> Delayer<A> {
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     /// NOTE that the delayed duration is NO LESS than
@@ -210,7 +210,7 @@ impl<A: Actor> Delayer<A> {
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     #[cfg(feature = "time")]
     #[cfg_attr(docsrs, doc(cfg(feature = "time")))]

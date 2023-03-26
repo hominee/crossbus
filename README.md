@@ -42,7 +42,7 @@ with the concept that
 - **Platform-less by Runtime-less** 
 
   take the advantage of runtime-less, crossbus is able to 
-  bypass annoyed the limitation of runtime implementor and system 
+  bypass the limitation of runtime implementor and system 
   interface abstraction and go right straight to manipulate 
   task directly. Only a simple and dummy future executor(look at 
    the [no-std example](https://github.com/hominee/crossbus/tree/master/examples/no-std)) is sufficed to run crossbus. This is the primary 
@@ -57,8 +57,10 @@ with the concept that
 
 - **Real-time Execution Control**
 
-  crossbus provides a handle with which more routines and events
-  can be intercepted for each spawned task.
+  taking the advantage of the design of future routine,
+  each poll and events alongside can be intercepted for 
+  each spawned task during execution, with which more 
+  execution control is possible.
 
 **Currently crossbus is in its alpha version, all APIs and archtecture 
 is not stable yet, and evolves very quickly.**
@@ -89,7 +91,7 @@ To reduce code redundancy and speed up compilation, crossbus use feature flag to
 First of all, add `crossbus` to `Cargo.toml` of project
 ```toml 
 [dependencies]
-crossbus = "0.0.4-a"
+crossbus = "0.0.5-a"
 ```
 #### Types and Imports
 

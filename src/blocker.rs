@@ -124,7 +124,7 @@ impl<A: Actor> Blocker<A> {
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     #[cfg(feature = "time")]

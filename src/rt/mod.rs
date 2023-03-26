@@ -1,7 +1,13 @@
 //! Convenient Runtime for common use
 //!
-//! CrossBus is Runtime-less, it means there is no
-//! built-in Runtime for execution,
+//! it demonstrates the implementor how
+//! to implement a runtime, may be removed
+//! in the future or replace it with
+//! a new crates or a document.
+//!
+//! Going Runtime less doesn't mean execution
+//! without runtime, but more procisely,
+//! **no built-in runtime, but allow any runtime,**
 //!
 //! it **DOES NOT** mean CrossBus runs without runtime.
 //! on the contrary, CrossBus allow various runtimes and

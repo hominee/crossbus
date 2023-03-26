@@ -29,7 +29,7 @@
 //! - **Platform-less by Runtime-less**
 //!
 //!   take the advantage of runtime-less, crossbus is able to
-//!   bypass annoyed the limitation of runtime implementor and system
+//!   bypass the limitation of runtime implementor and system
 //!   interface abstraction and go right straight to manipulate
 //!   task directly.
 //!   This is the primary concept of crossbus to run across
@@ -43,8 +43,10 @@
 //!
 //! - **Real-time Execution Control**
 //!
-//!   crossbus provides a handle with which more routines and events
-//!   can be intercepted for each spawned task.
+//!   taking the advantage of the design of future routine,
+//!   each poll and events alongside can be intercepted for
+//!   each spawned task during execution, with which more
+//!   execution control is possible.
 //!
 
 #[macro_use]

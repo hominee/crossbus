@@ -133,11 +133,13 @@ impl<A: Actor> Context<A> {
     }
 
     /// get the id of the actor
+    /// that owns this Context
     pub fn id(&self) -> ActorId {
         self.id
     }
 
     /// set the id of the actor
+    /// that owns this Context
     pub(crate) fn set_id(&mut self, id: usize) {
         self.id = id;
     }
@@ -152,7 +154,6 @@ impl<A: Actor> Context<A> {
     /// }
     ///
     /// impl Actor for CrossBus {
-    ///
     ///     fn action(&mut self, msg: Self::Message, ctx: &mut Context<Self>) {
     ///         // spawn the `run` for execution
     ///         let dur = core::time::Duration::from_secs(1);
@@ -174,8 +175,8 @@ impl<A: Actor> Context<A> {
         handle
     }
 
-    /// block the actor until the
-    /// spawned future is completed
+    /// block the actor from receiving message
+    /// until the spawned future is completed
     ///
     /// ``` no_run rust
     /// use crossbus::prelude::*;
@@ -206,12 +207,12 @@ impl<A: Actor> Context<A> {
         handle
     }
 
-    /// block the actor with specified
-    /// duration
+    /// block the actor from receiving message
+    /// with specified duration
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     /// ``` no_run rust
@@ -244,6 +245,7 @@ impl<A: Actor> Context<A> {
     }
 
     /// send message to the queue
+    ///
     /// messages may be rejected when actor is
     /// blocked or message queue is full/closed
     ///
@@ -281,6 +283,7 @@ impl<A: Actor> Context<A> {
     }
 
     /// send a batch of messages to the queue
+    ///
     /// messages may be rejected when actor is
     /// blocked or message queue is full/closed
     ///
@@ -322,7 +325,6 @@ impl<A: Actor> Context<A> {
     pub fn send_future<F>(&mut self, fut: F) -> Handle
     where
         F: CoreFuture<Output = ()> + 'static,
-        A::Message: Message + 'static,
     {
         let local = Localizer::new(fut);
         let handle = Handle::new();
@@ -335,8 +337,9 @@ impl<A: Actor> Context<A> {
     }
 
     /// instantly deliver a message
-    /// NOTE that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    ///
+    /// **NOTE** that the message bypass the message queue
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     ///
     /// ```no_run rust
     /// ...
@@ -361,12 +364,13 @@ impl<A: Actor> Context<A> {
     }
 
     /// deliver a message with specified duration delay
-    /// NOTE that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    ///
+    /// **NOTE** that the message bypass the message queue
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     /// ```no_run rust
@@ -395,10 +399,11 @@ impl<A: Actor> Context<A> {
     }
 
     /// deliver a message with specified function that
-    /// it will be delayed as long as the `f` is not
-    /// Poll::Ready(_)
-    /// NOTE that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// it will be delayed as long as the `f` returns
+    /// Poll::Pending
+    ///
+    /// **NOTE** that the message bypass the message queue
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     pub fn delay_message_fn<F>(&mut self, msg: A::Message, f: F) -> Handle
     where
         A::Message: Message + Unpin + 'static,
@@ -422,18 +427,19 @@ impl<A: Actor> Context<A> {
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     /// **Safety**: Since consuming `message` couple times
     /// involving memory safety, message mutating is **NOT**
-    /// allowed after `repeat_message` consuming this `message`,
-    /// eg it's ILLEGAL to mutate it in `Actor::action` or
-    /// somewhere else which lead to unexpected behavior.
-    /// It is caller's responsibility to prevent these
+    /// allowed here!
+    /// eg it's ILLEGAL to mutate it in [Actor::action](crate::actor::Actor::action) or
+    /// somewhere else, or else it could lead to unexpected
+    /// behavior. It's caller's responsibility to prevent these
     ///
     /// **NOTE** that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
+    ///
     /// the argument `repeats` is `usize`, has three scenarios:
     /// - None: Infinitely deliver the message
     /// - Some(0): Just deliver the message **Once**
@@ -472,13 +478,14 @@ impl<A: Actor> Context<A> {
 
     /// deliver a message with specified
     /// function that it will be delayed
-    /// as long as the `f` is not Poll::Ready(_)
+    /// as long as the `f` returns Poll::Pending
+    ///
     /// the function's Output **MUST** be `Indicator::Message`
     /// if not, it will log out the error,
     /// and gets ignored
     ///
-    /// NOTE that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// **NOTE** that the message bypass the message queue
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     pub fn delay_fn<F>(&mut self, f: F) -> Handle
     where
         A::Message: Message + Unpin + 'static,
@@ -504,7 +511,7 @@ impl<A: Actor> Context<A> {
     /// **NOT** [`Actor::action`](`Actor::action`)
     ///
     /// **NOTE** that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// and get handled by [Stream::action](crate::stream::Stream::action) directly
     ///
     /// ``` no_run rust
     /// use crossbus::prelude::*;
@@ -541,12 +548,12 @@ impl<A: Actor> Context<A> {
 
     /// spawn a message stream into the actor
     ///
-    ///  **NOTE** that the stream item
-    /// will be processed by [`Stream::action`](`Stream::action`)
-    /// **NOT** [`Actor::action`](`Actor::action`)
+    ///  **NOTE** that the stream item is message
+    /// will be processed by [`Actor::action`](`Actor::action`)
+    /// **NOT** [`Stream::action`](`Stream::action`)
     ///
     /// **NOTE** that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     ///
     /// ``` no_run rust
     /// use crossbus::prelude::*;
@@ -599,9 +606,8 @@ impl<A: Actor> Context<A> {
         }
     }
 
-    /// TODO: maybe impl it with `tunnel`
-    /// mark the future the handle points to
-    /// is to be aborted
+    // TODO: maybe impl it with `tunnel`
+    /// abort a future
     pub fn abort_future(&mut self, handle: Handle) {
         self.abortion.push(handle);
     }
@@ -612,21 +618,19 @@ impl<A: Actor> Context<A> {
     }
 
     /// set the state of the actor
-    /// be CAREFUL with it that
-    /// it will change actor execution
     pub fn set_state(&mut self, state: ActorState) {
         self.state = state;
     }
 
-    /// whether the actor is started or not
-    pub fn is_started(&self) -> bool {
-        self.state.is_started()
-    }
+    ///// whether the actor is started or not
+    //pub fn is_started(&self) -> bool {
+    //self.state.is_started()
+    //}
 
-    /// whether the actor is running state
-    pub fn is_running(&self) -> bool {
-        self.state == ActorState::Running
-    }
+    ///// whether the actor is running state
+    //pub fn is_running(&self) -> bool {
+    //self.state == ActorState::Running
+    //}
 
     /// run the actor
     pub fn run(self, act: ActorGuard<A>) -> Addr<A::Message> {
@@ -636,15 +640,15 @@ impl<A: Actor> Context<A> {
         addr
     }
 
-    /// whether the actor is in stopping or not
-    pub fn is_stopping(&self) -> bool {
-        self.state == ActorState::Stopping
-    }
+    ///// whether the actor is in stopping or not
+    //pub fn is_stopping(&self) -> bool {
+    //self.state == ActorState::Stopping
+    //}
 
-    /// whether the actor is stopped or not
-    pub fn is_stopped(&self) -> bool {
-        self.state == ActorState::Stopped
-    }
+    ///// whether the actor is stopped or not
+    //pub fn is_stopped(&self) -> bool {
+    //self.state == ActorState::Stopped
+    //}
 
     /// restart the context, it will
     /// - flush all blockers
@@ -658,6 +662,7 @@ impl<A: Actor> Context<A> {
     }
 
     /// stop the context and the actor
+    ///
     /// it can be restored if `Actor::state`
     /// returns `ActingState::Resume`
     /// if not, the actor will be stopped
@@ -688,6 +693,22 @@ impl<A: Actor> Context<A> {
             }
         }
         for pair in runner.bloc.iter() {
+            if pair.handle == handle {
+                return pair
+                    .inner
+                    .downcast_ref()
+                    .and_then(|any_| any_.downcast_ref::<T>());
+            }
+        }
+        for pair in self.inner.iter() {
+            if pair.handle == handle {
+                return pair
+                    .inner
+                    .downcast_ref()
+                    .and_then(|any_| any_.downcast_ref::<T>());
+            }
+        }
+        for pair in self.bloc.iter() {
             if pair.handle == handle {
                 return pair
                     .inner
@@ -887,7 +908,7 @@ impl<A: Actor> ContextRunner<A> {
     /// should the runner continue to be
     /// alive or exit
     pub fn is_alive(&self) -> bool {
-        if self.ctx.is_stopped() {
+        if self.ctx.state == ActorState::Stopped {
             return false;
         }
         self.ctx.pack.update_state();

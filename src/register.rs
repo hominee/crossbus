@@ -116,9 +116,9 @@ impl Register {
 
     /// take the reference of Register
     pub fn as_ref() -> &'static Vec<ActorRegister> {
-        //while REGISTERSEAL.load(Ordering::Relaxed) {
-        //hint::spin_loop();
-        //}
+        while REGISTERSEAL.load(Ordering::Relaxed) {
+            hint::spin_loop();
+        }
         unsafe { &REGISTER.inner }
     }
 }
