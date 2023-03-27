@@ -62,7 +62,7 @@ with the concept that
   each spawned task during execution, with which more 
   execution control is possible.
 
-**Currently crossbus is in its alpha version, all APIs and archtecture 
+**Currently crossbus is in its alpha version, all APIs and architecture 
 is not stable yet, and evolves very quickly.**
 
 ## Documentation
@@ -97,9 +97,9 @@ crossbus = "0.0.5-a"
 
 define Some types and methods according to your business logic.
 
-let's say a summer to add some number up, 
+let's say a actor to add some number up, 
 Okay, then the message should be numbers
-the summer should know the result after adding.
+the actor should know the result after adding.
 ```rust
 use crossbus::prelude::*;
 
@@ -121,19 +121,17 @@ we tell crossbus how to create it
 impl Actor for CrossBus {
     type Message = Num;
 ...
-
     fn create(ctx: &mut Context<Self>) -> Self {
         Self { sum: 0, }
     }
 ...
-
 }
 
 ```
 
 #### Message Action & Reaction
 
-Okay, How the Summer respond when the message comes?
+Okay, How the actor respond when the message comes?
 we should tell crossbus.
 
 ```rust 
@@ -163,7 +161,7 @@ the Full code see below.
 ## Example
 Here presents a simple demo to sum numbers.
 
-For more examples, you can go to the [examples](https://github.com/hominee/crossbus/examples) folder
+For more examples, you can go to the [examples](https://github.com/hominee/crossbus/tree/master/examples) folder
 and clone the repo and run them locally.
 
 ```rust 
