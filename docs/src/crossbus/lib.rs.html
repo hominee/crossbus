@@ -58,17 +58,93 @@
 <a href="#58" id="58">58</a>
 <a href="#59" id="59">59</a>
 <a href="#60" id="60">60</a>
-</pre><pre class="rust"><code><span class="comment">//#![cfg_attr(docsrs, feature(doc_auto_cfg))]
-</span><span class="attr">#![cfg_attr(docsrs, feature(doc_cfg))]
-#![cfg_attr(not(feature = <span class="string">&quot;std&quot;</span>), no_std)]
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
+<a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
+<a href="#65" id="65">65</a>
+<a href="#66" id="66">66</a>
+<a href="#67" id="67">67</a>
+<a href="#68" id="68">68</a>
+<a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
+<a href="#80" id="80">80</a>
+<a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+</pre><pre class="rust"><code><span class="attr">#![cfg_attr(not(feature = <span class="string">&quot;std&quot;</span>), no_std)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 </span><span class="doccomment">//! CrossBus is a platform-less runtime-less actor computing model
 //!
-//! - Runtime-less
-//! - Platform-less
-//! - Bare-Metal compatible
-//! - Future-oriented routine and events
-//! - Real-time Execution Control
+//! ## Overview
+//! [CrossBus](https://github.com/hominee/crossbus) is an implementation of
+//! [Actor Computing Model](https://en.wikipedia.org/wiki/Actor_model),
+//! with the concept that
 //!
+//! - **Runtime-less**
+//!
+//!   crossbus neither provide runtime for app execution
+//!   nor access the system interface abstraction.
+//!   no built-in runtime, but any runtime is allowed,  
+//!   the system-provided / third-party&#39;s / that from
+//!   `FFI`-binding all work.
+//!   Last but not least, even a bare-bone [noop-waker executor](https://docs.rs/futures-task/latest/futures_task/fn.noop_waker.html)
+//!   can do.
+//!
+//!   runtime-located features like `concurrency`, `network` and `I/O`
+//!   are up to implementor.
+//!
+//! - **Bare-Metal Compatible**
+//!
+//!   crossbus links to no system libraries, no libc,
+//!   and a few upstream libraries
+//!   enbale you run rust code on bare metal.
+//!
+//! - **Platform-less by Runtime-less**
+//!
+//!   take the advantage of runtime-less, crossbus is able to
+//!   bypass the limitation of runtime implementor and system
+//!   interface abstraction and go right straight to manipulate
+//!   task directly.
+//!   This is the primary concept of crossbus to run across
+//!   many platforms or without platforms.
+//!
+//! - **Future-oriented Routine and Events**
+//!
+//!   the futures way to execute task is retained even
+//!   without runtime thanks to rust. crossbus defines a set of types
+//!   and traits to allow asynchronous tasks manipulation.
+//!
+//! - **Real-time Execution Control**
+//!
+//!   taking the advantage of the design of future routine,
+//!   each poll and events alongside can be intercepted for
+//!   each spawned task during execution, with which more
+//!   execution control is possible.
 //!
 
 </span><span class="attr">#[macro_use]

@@ -357,7 +357,7 @@
     </span>A: Actor,
 {
     <span class="doccomment">/// called before the blocker get started
-    </span><span class="kw">fn </span>started(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
+    </span><span class="kw">fn </span>started(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
 
     <span class="doccomment">/// Runtime control of the `Blcoker`
     /// to abort the actor.
@@ -365,15 +365,15 @@
     /// Real-Time control or more elaborated
     /// execution could be achieved right here
     ///
-    </span><span class="kw">fn </span>state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) -&gt; BlockingState {
+    </span><span class="kw">fn </span>state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) -&gt; BlockingState {
         BlockingState::Continue
     }
 
     <span class="doccomment">/// called before the blocker get aborted
-    </span><span class="kw">fn </span>aborted(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
+    </span><span class="kw">fn </span>aborted(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
 
     <span class="doccomment">/// called after the blocker successfully finished
-    </span><span class="kw">fn </span>finished(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
+    </span><span class="kw">fn </span>finished(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
 }
 
 <span class="doccomment">/// block the actor (or make the actor waiting)
@@ -424,7 +424,7 @@
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     </span><span class="attr">#[cfg(feature = <span class="string">&quot;time&quot;</span>)]

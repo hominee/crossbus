@@ -481,7 +481,7 @@
     </span><span class="self">Self</span>: Actor,
 {
     <span class="doccomment">/// called before the actor emit the first Strem Item
-    </span><span class="kw">fn </span>started(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
+    </span><span class="kw">fn </span>started(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
 
     <span class="doccomment">/// action to do for the Stream Item
     </span><span class="kw">fn </span>action(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: Item, ctx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;);
@@ -491,7 +491,7 @@
     ///
     /// Real-Time control or more elaborated
     /// execution could be achieved right here
-    </span><span class="kw">fn </span>state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) -&gt; StreamingState {
+    </span><span class="kw">fn </span>state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) -&gt; StreamingState {
         StreamingState::Continue
     }
 
@@ -510,16 +510,16 @@
     }
 
     <span class="doccomment">/// called after the actor aborts the stream
-    </span><span class="kw">fn </span>aborted(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
+    </span><span class="kw">fn </span>aborted(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
 
     <span class="doccomment">/// called after the actor pause the stream
-    </span><span class="kw">fn </span>paused(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
+    </span><span class="kw">fn </span>paused(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
 
     <span class="doccomment">/// called after the actor resume the stream
-    </span><span class="kw">fn </span>resumed(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
+    </span><span class="kw">fn </span>resumed(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
 
     <span class="doccomment">/// called after the actor send the last Strem Item
-    </span><span class="kw">fn </span>finished(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
+    </span><span class="kw">fn </span>finished(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) {}
 }
 
 <span class="macro">pin_project! </span>{

@@ -667,7 +667,7 @@
 ///
 </span><span class="kw">pub trait </span>Delaying&lt;A: Actor&gt; {
     <span class="doccomment">/// called before the Delayer
-    </span><span class="kw">fn </span>started(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
+    </span><span class="kw">fn </span>started(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
 
     <span class="doccomment">/// change the state of the Delayer to
     /// abort/emit/continue the Delayer when
@@ -675,18 +675,18 @@
     ///
     /// Real-Time control or more elaborated
     /// execution could be achieved right here
-    </span><span class="kw">fn </span>state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) -&gt; DelayingState {
+    </span><span class="kw">fn </span>state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) -&gt; DelayingState {
         DelayingState::Continue
     }
 
     <span class="doccomment">/// called before the Delayer get aborted
-    </span><span class="kw">fn </span>aborted(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
+    </span><span class="kw">fn </span>aborted(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
 
     <span class="doccomment">/// called after the Delayer emitted in advance
-    </span><span class="kw">fn </span>emitted(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
+    </span><span class="kw">fn </span>emitted(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
 
     <span class="doccomment">/// called after the Delayer finished
-    </span><span class="kw">fn </span>finished(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
+    </span><span class="kw">fn </span>finished(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;A&gt;) {}
 }
 
 <span class="kw">impl</span>&lt;A: Actor&gt; Delayer&lt;A&gt; {
@@ -711,7 +711,7 @@
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     /// NOTE that the delayed duration is NO LESS than
@@ -760,7 +760,7 @@
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     </span><span class="attr">#[cfg(feature = <span class="string">&quot;time&quot;</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">&quot;time&quot;</span>)))]

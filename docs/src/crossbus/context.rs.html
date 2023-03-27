@@ -1243,6 +1243,36 @@
 <a href="#1243" id="1243">1243</a>
 <a href="#1244" id="1244">1244</a>
 <a href="#1245" id="1245">1245</a>
+<a href="#1246" id="1246">1246</a>
+<a href="#1247" id="1247">1247</a>
+<a href="#1248" id="1248">1248</a>
+<a href="#1249" id="1249">1249</a>
+<a href="#1250" id="1250">1250</a>
+<a href="#1251" id="1251">1251</a>
+<a href="#1252" id="1252">1252</a>
+<a href="#1253" id="1253">1253</a>
+<a href="#1254" id="1254">1254</a>
+<a href="#1255" id="1255">1255</a>
+<a href="#1256" id="1256">1256</a>
+<a href="#1257" id="1257">1257</a>
+<a href="#1258" id="1258">1258</a>
+<a href="#1259" id="1259">1259</a>
+<a href="#1260" id="1260">1260</a>
+<a href="#1261" id="1261">1261</a>
+<a href="#1262" id="1262">1262</a>
+<a href="#1263" id="1263">1263</a>
+<a href="#1264" id="1264">1264</a>
+<a href="#1265" id="1265">1265</a>
+<a href="#1266" id="1266">1266</a>
+<a href="#1267" id="1267">1267</a>
+<a href="#1268" id="1268">1268</a>
+<a href="#1269" id="1269">1269</a>
+<a href="#1270" id="1270">1270</a>
+<a href="#1271" id="1271">1271</a>
+<a href="#1272" id="1272">1272</a>
+<a href="#1273" id="1273">1273</a>
+<a href="#1274" id="1274">1274</a>
+<a href="#1275" id="1275">1275</a>
 </pre><pre class="rust"><code><span class="doccomment">//! actor-level execution state and local environment
 //! during runtime
 //!
@@ -1378,11 +1408,13 @@
     }
 
     <span class="doccomment">/// get the id of the actor
+    /// that owns this Context
     </span><span class="kw">pub fn </span>id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ActorId {
         <span class="self">self</span>.id
     }
 
     <span class="doccomment">/// set the id of the actor
+    /// that owns this Context
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, id: usize) {
         <span class="self">self</span>.id = id;
     }
@@ -1397,7 +1429,6 @@
     /// }
     ///
     /// impl Actor for CrossBus {
-    ///
     ///     fn action(&amp;mut self, msg: Self::Message, ctx: &amp;mut Context&lt;Self&gt;) {
     ///         // spawn the `run` for execution
     ///         let dur = core::time::Duration::from_secs(1);
@@ -1419,8 +1450,8 @@
         handle
     }
 
-    <span class="doccomment">/// block the actor until the
-    /// spawned future is completed
+    <span class="doccomment">/// block the actor from receiving message
+    /// until the spawned future is completed
     ///
     /// ``` no_run rust
     /// use crossbus::prelude::*;
@@ -1451,12 +1482,12 @@
         handle
     }
 
-    <span class="doccomment">/// block the actor with specified
-    /// duration
+    <span class="doccomment">/// block the actor from receiving message
+    /// with specified duration
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     /// ``` no_run rust
@@ -1489,6 +1520,7 @@
     }
 
     <span class="doccomment">/// send message to the queue
+    ///
     /// messages may be rejected when actor is
     /// blocked or message queue is full/closed
     ///
@@ -1526,6 +1558,7 @@
     }
 
     <span class="doccomment">/// send a batch of messages to the queue
+    ///
     /// messages may be rejected when actor is
     /// blocked or message queue is full/closed
     ///
@@ -1567,7 +1600,6 @@
     </span><span class="kw">pub fn </span>send_future&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, fut: F) -&gt; Handle
     <span class="kw">where
         </span>F: CoreFuture&lt;Output = ()&gt; + <span class="lifetime">&#39;static</span>,
-        A::Message: Message + <span class="lifetime">&#39;static</span>,
     {
         <span class="kw">let </span>local = Localizer::new(fut);
         <span class="kw">let </span>handle = Handle::new();
@@ -1580,8 +1612,9 @@
     }
 
     <span class="doccomment">/// instantly deliver a message
-    /// NOTE that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    ///
+    /// **NOTE** that the message bypass the message queue
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     ///
     /// ```no_run rust
     /// ...
@@ -1606,12 +1639,13 @@
     }
 
     <span class="doccomment">/// deliver a message with specified duration delay
-    /// NOTE that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    ///
+    /// **NOTE** that the message bypass the message queue
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     /// ```no_run rust
@@ -1640,10 +1674,11 @@
     }
 
     <span class="doccomment">/// deliver a message with specified function that
-    /// it will be delayed as long as the `f` is not
-    /// Poll::Ready(_)
-    /// NOTE that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// it will be delayed as long as the `f` returns
+    /// Poll::Pending
+    ///
+    /// **NOTE** that the message bypass the message queue
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     </span><span class="kw">pub fn </span>delay_message_fn&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: A::Message, f: F) -&gt; Handle
     <span class="kw">where
         </span>A::Message: Message + Unpin + <span class="lifetime">&#39;static</span>,
@@ -1667,18 +1702,19 @@
     ///
     /// feature **`time`** must be enabled
     /// and the [Timing](`Timing`) implementation
-    /// is required with which the actor can known
+    /// is required with which the actor can know
     /// the time
     ///
     /// **Safety**: Since consuming `message` couple times
     /// involving memory safety, message mutating is **NOT**
-    /// allowed after `repeat_message` consuming this `message`,
-    /// eg it&#39;s ILLEGAL to mutate it in `Actor::action` or
-    /// somewhere else which lead to unexpected behavior.
-    /// It is caller&#39;s responsibility to prevent these
+    /// allowed here!
+    /// eg it&#39;s ILLEGAL to mutate it in [Actor::action](crate::actor::Actor::action) or
+    /// somewhere else, or else it could lead to unexpected
+    /// behavior. It&#39;s caller&#39;s responsibility to prevent these
     ///
     /// **NOTE** that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
+    ///
     /// the argument `repeats` is `usize`, has three scenarios:
     /// - None: Infinitely deliver the message
     /// - Some(0): Just deliver the message **Once**
@@ -1717,13 +1753,14 @@
 
     <span class="doccomment">/// deliver a message with specified
     /// function that it will be delayed
-    /// as long as the `f` is not Poll::Ready(_)
+    /// as long as the `f` returns Poll::Pending
+    ///
     /// the function&#39;s Output **MUST** be `Indicator::Message`
     /// if not, it will log out the error,
     /// and gets ignored
     ///
-    /// NOTE that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// **NOTE** that the message bypass the message queue
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     </span><span class="kw">pub fn </span>delay_fn&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, f: F) -&gt; Handle
     <span class="kw">where
         </span>A::Message: Message + Unpin + <span class="lifetime">&#39;static</span>,
@@ -1749,7 +1786,7 @@
     /// **NOT** [`Actor::action`](`Actor::action`)
     ///
     /// **NOTE** that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// and get handled by [Stream::action](crate::stream::Stream::action) directly
     ///
     /// ``` no_run rust
     /// use crossbus::prelude::*;
@@ -1786,12 +1823,12 @@
 
     <span class="doccomment">/// spawn a message stream into the actor
     ///
-    ///  **NOTE** that the stream item
-    /// will be processed by [`Stream::action`](`Stream::action`)
-    /// **NOT** [`Actor::action`](`Actor::action`)
+    ///  **NOTE** that the stream item is message
+    /// will be processed by [`Actor::action`](`Actor::action`)
+    /// **NOT** [`Stream::action`](`Stream::action`)
     ///
     /// **NOTE** that the message bypass the message queue
-    /// and get handled by `Actor::update` directly
+    /// and get handled by [Actor::action](crate::actor::Actor::action) directly
     ///
     /// ``` no_run rust
     /// use crossbus::prelude::*;
@@ -1844,9 +1881,8 @@
         }
     }
 
-    <span class="doccomment">/// TODO: maybe impl it with `tunnel`
-    /// mark the future the handle points to
-    /// is to be aborted
+    <span class="comment">// TODO: maybe impl it with `tunnel`
+    </span><span class="doccomment">/// abort a future
     </span><span class="kw">pub fn </span>abort_future(<span class="kw-2">&amp;mut </span><span class="self">self</span>, handle: Handle) {
         <span class="self">self</span>.abortion.push(handle);
     }
@@ -1857,23 +1893,21 @@
     }
 
     <span class="doccomment">/// set the state of the actor
-    /// be CAREFUL with it that
-    /// it will change actor execution
     </span><span class="kw">pub fn </span>set_state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, state: ActorState) {
         <span class="self">self</span>.state = state;
     }
 
-    <span class="doccomment">/// whether the actor is started or not
-    </span><span class="kw">pub fn </span>is_started(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.state.is_started()
-    }
+    <span class="comment">///// whether the actor is started or not
+    //pub fn is_started(&amp;self) -&gt; bool {
+    //self.state.is_started()
+    //}
 
-    <span class="doccomment">/// whether the actor is running state
-    </span><span class="kw">pub fn </span>is_running(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.state == ActorState::Running
-    }
+    ///// whether the actor is running state
+    //pub fn is_running(&amp;self) -&gt; bool {
+    //self.state == ActorState::Running
+    //}
 
-    <span class="doccomment">/// run the actor
+    </span><span class="doccomment">/// run the actor
     </span><span class="kw">pub fn </span>run(<span class="self">self</span>, act: ActorGuard&lt;A&gt;) -&gt; Addr&lt;A::Message&gt; {
         <span class="kw">let </span>addr = <span class="self">self</span>.address();
         <span class="kw">let </span>runner = ContextRunner::new(<span class="self">self</span>, act);
@@ -1881,17 +1915,17 @@
         addr
     }
 
-    <span class="doccomment">/// whether the actor is in stopping or not
-    </span><span class="kw">pub fn </span>is_stopping(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.state == ActorState::Stopping
-    }
+    <span class="comment">///// whether the actor is in stopping or not
+    //pub fn is_stopping(&amp;self) -&gt; bool {
+    //self.state == ActorState::Stopping
+    //}
 
-    <span class="doccomment">/// whether the actor is stopped or not
-    </span><span class="kw">pub fn </span>is_stopped(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.state == ActorState::Stopped
-    }
+    ///// whether the actor is stopped or not
+    //pub fn is_stopped(&amp;self) -&gt; bool {
+    //self.state == ActorState::Stopped
+    //}
 
-    <span class="doccomment">/// restart the context, it will
+    </span><span class="doccomment">/// restart the context, it will
     /// - flush all blockers
     /// - flush all running tasks
     /// but the message queue will survive
@@ -1903,6 +1937,7 @@
     }
 
     <span class="doccomment">/// stop the context and the actor
+    ///
     /// it can be restored if `Actor::state`
     /// returns `ActingState::Resume`
     /// if not, the actor will be stopped
@@ -1933,6 +1968,22 @@
             }
         }
         <span class="kw">for </span>pair <span class="kw">in </span>runner.bloc.iter() {
+            <span class="kw">if </span>pair.handle == handle {
+                <span class="kw">return </span>pair
+                    .inner
+                    .downcast_ref()
+                    .and_then(|any_| any_.downcast_ref::&lt;T&gt;());
+            }
+        }
+        <span class="kw">for </span>pair <span class="kw">in </span><span class="self">self</span>.inner.iter() {
+            <span class="kw">if </span>pair.handle == handle {
+                <span class="kw">return </span>pair
+                    .inner
+                    .downcast_ref()
+                    .and_then(|any_| any_.downcast_ref::&lt;T&gt;());
+            }
+        }
+        <span class="kw">for </span>pair <span class="kw">in </span><span class="self">self</span>.bloc.iter() {
             <span class="kw">if </span>pair.handle == handle {
                 <span class="kw">return </span>pair
                     .inner
@@ -2132,7 +2183,7 @@
     <span class="doccomment">/// should the runner continue to be
     /// alive or exit
     </span><span class="kw">pub fn </span>is_alive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">if </span><span class="self">self</span>.ctx.is_stopped() {
+        <span class="kw">if </span><span class="self">self</span>.ctx.state == ActorState::Stopped {
             <span class="kw">return </span><span class="bool-val">false</span>;
         }
         <span class="self">self</span>.ctx.pack.update_state();
@@ -2153,8 +2204,17 @@
 <span class="kw">unsafe impl</span>&lt;A: Actor&gt; Send <span class="kw">for </span>ContextRunner&lt;A&gt; {}
 <span class="kw">unsafe impl</span>&lt;A: Actor&gt; Sync <span class="kw">for </span>ContextRunner&lt;A&gt; {}
 
-<span class="comment">// NOTE Modify the poll routine
-// after the actor is not alive
+<span class="doccomment">/// **Safety**: no technical guarantee that only
+/// one mutable access when mutably borrow
+/// `ActorGuard&lt;A&gt;` in `ContextRunner`.
+/// but so far it is safe to use.
+/// Since mutation only happens in `poll` and its
+/// called-functions inside, and at most one mutable
+/// access happens there.
+</span><span class="comment">//
+// NOTE for future development, maybe seal the
+// ActorGuard before mutable borrowing
+// for more complex logic
 </span><span class="kw">impl</span>&lt;A&gt; CoreFuture <span class="kw">for </span>ContextRunner&lt;A&gt;
 <span class="kw">where
     </span>A: Actor,

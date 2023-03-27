@@ -309,7 +309,11 @@
 <a href="#309" id="309">309</a>
 <a href="#310" id="310">310</a>
 <a href="#311" id="311">311</a>
-</pre><pre class="rust"><code><span class="doccomment">//! Reactor is the executor and manager of all actors, serves
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+</pre><pre class="rust"><code><span class="doccomment">//! Reactor is the executor and manager of all actors,
+//!
+//! serves as
 //! - Actor Runner Schedule and Execution
 //! - Actor Register maintenance and update
 //!
@@ -440,7 +444,8 @@
 }
 
 <span class="kw">impl </span>Reactor {
-    <span class="doccomment">/// get the static reference of REACTOR
+    <span class="doccomment">/// get the reference of global
+    /// static `REACTOR`
     </span><span class="kw">pub fn </span>new() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="self">Self </span>{
         <span class="comment">// **Safety**: With `INIT` guard, we assure that
         // REACTOR is initialized and its inner
@@ -450,7 +455,7 @@
         </span><span class="kw">unsafe </span>{ <span class="kw-2">&amp;</span>REACTOR }
     }
 
-    <span class="doccomment">/// push a pair to the queue cache
+    <span class="doccomment">/// push a pair to the cache queue
     </span><span class="kw">pub fn </span>push(future: ReactorPair) {
         <span class="kw">if </span>!QUEUENULLINIT.load(Ordering::Acquire) {
             REACTORCACHE.assume_init();
@@ -461,10 +466,9 @@
 
     <span class="doccomment">/// drive all reactor&#39;s futures into completion
     ///
-    /// **Safety**: as the inner data is guarded with
-    /// `REACTORSEAL`, any mutable actions happens
-    /// will trigger the guardian locked
-    ///
+    </span><span class="comment">// **Safety**: as the inner data is guarded with
+    // `REACTORSEAL`, any mutable actions happens
+    // will trigger the guardian locked
     </span><span class="kw">pub async fn </span>as_future() {
         <span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut </span>REACTOR }.<span class="kw">await
     </span>}
@@ -484,8 +488,8 @@
         <span class="kw">unsafe </span>{ REACTOR.inner.len() }
     }
 
-    <span class="comment">// process reactor cache
-    // - poll reacting orders from cache
+    <span class="doccomment">/// process reactor cache
+    /// - poll reacting orders from cache
     </span><span class="kw">fn </span>epoll(inner: <span class="kw-2">&amp;mut </span>Vec&lt;ReactorPair&gt;) {
         <span class="kw">while let </span><span class="prelude-val">Some</span>(order) = <span class="kw">unsafe </span>{ REACTORCACHE.pop() } {
             <span class="kw">match </span>order {
@@ -576,7 +580,7 @@
             <span class="macro">log::trace!</span>(<span class="string">&quot;Wake future in reactor&quot;</span>);
             cx.waker().wake_by_ref();
         } <span class="kw">else </span>{
-            <span class="macro">log::error!</span>(<span class="string">&quot;Unfinished Future HANGING INDEFINITELY.\nFuture is **NOT WAKED** after `Poll::Pending` returned&quot;</span>);
+            <span class="macro">log::error!</span>(<span class="string">&quot;Unfinished Future HANGING INDEFINITELY. Future is **NOT WAKED** after `Poll::Pending` returned&quot;</span>);
         }
         Poll::Pending
     }

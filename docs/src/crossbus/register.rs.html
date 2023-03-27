@@ -339,7 +339,17 @@
 <a href="#339" id="339">339</a>
 <a href="#340" id="340">340</a>
 <a href="#341" id="341">341</a>
-</pre><pre class="rust"><code><span class="doccomment">//! Actor lifecycle Manager
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+</pre><pre class="rust"><code><span class="doccomment">//! Actor lifecycle Management
 //!
 </span><span class="kw">extern crate </span>alloc;
 
@@ -392,8 +402,8 @@
         <span class="kw">unsafe </span>{ <span class="kw-2">&amp;</span>REGISTER }
     }
 
-    <span class="doccomment">/// push an actor into REGISTER and
-    /// return its guarded underlying actor
+    <span class="doccomment">/// push an actor into `REGISTER` and
+    /// return its underlying guarded actor
     </span><span class="kw">pub fn </span>push&lt;A: Actor&gt;(item: ActorRegister) -&gt; ActorGuard&lt;A&gt; {
         <span class="comment">// the underlying actor is required to be downcasted;
         </span><span class="kw">let </span>data = item.downcast_ref_cell();
@@ -410,8 +420,17 @@
     }
 
     <span class="doccomment">/// get an actor register by id
+    ///
+    /// use [iter](Self::iter) instead if
+    /// `message_id` or actor `type_id`
+    /// is involved
     </span><span class="kw">pub fn </span>get(id: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>ActorRegister&gt; {
         <span class="self">Self</span>::as_ref().iter().find(|reg| reg.id() == id)
+    }
+
+    <span class="doccomment">/// iterate actor(s) register
+    </span><span class="kw">pub fn </span>iter() -&gt; core::slice::Iter&lt;<span class="lifetime">&#39;static</span>, ActorRegister&gt; {
+        <span class="self">Self</span>::as_ref().iter()
     }
 
     <span class="doccomment">/// clear closed actor as long as
@@ -448,10 +467,10 @@
 
     <span class="doccomment">/// take the reference of Register
     </span><span class="kw">pub fn </span>as_ref() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Vec&lt;ActorRegister&gt; {
-        <span class="comment">//while REGISTERSEAL.load(Ordering::Relaxed) {
-        //hint::spin_loop();
-        //}
-        </span><span class="kw">unsafe </span>{ <span class="kw-2">&amp;</span>REGISTER.inner }
+        <span class="kw">while </span>REGISTERSEAL.load(Ordering::Relaxed) {
+            hint::spin_loop();
+        }
+        <span class="kw">unsafe </span>{ <span class="kw-2">&amp;</span>REGISTER.inner }
     }
 }
 
@@ -459,13 +478,14 @@
 /// future use (Create/Read/Update/Delete)
 ///
 /// each record contains
-/// - `id`: `usize`
+/// - `id`: `usize`, the unique identifier of the actor.
 /// - `actor`: the type implemented [`Acotr`](Actor) trait
-/// - `sealed`: `AtomicBool`, marker whether the actor is mutably borrowed or not
-/// - `type_id`: the type id of the type implemented [`Acotr`](Actor) trait
+/// - `sealed`: `AtomicBool`, status marker indicates the actor is mutably borrowed or not
+/// - `type_id`: the type id of [`Acotr`](Actor) trait implementor
 /// - `message_id`: the type id of the type implemented [`Message`](crate::message::Message) trait
-/// - `name`: String
-/// - `closed`: `AtomicBool`, marker whether the actor is closed or not
+/// - `name`: `String`, the name of the registered actor, the default format is `Acotr-{id}`,
+/// customize it with [set_name](ActorRegister::set_name).
+/// - `closed`: `AtomicBool`, status marker indicates the actor is closed or not
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>ActorRegister {
     id: usize,
@@ -477,7 +497,7 @@
     closed: AtomicBool,
 }
 
-<span class="doccomment">/// An guardian created when Actor gets registered
+<span class="doccomment">/// An guardian created when an Actor gets registered
 </span><span class="kw">pub struct </span>ActorGuard&lt;A: Actor&gt; {
     inner: Arc&lt;UnsafeCell&lt;A&gt;&gt;,
     sealed: Arc&lt;AtomicBool&gt;,
@@ -486,7 +506,7 @@
 <span class="kw">impl</span>&lt;A: Actor&gt; fmt::Debug <span class="kw">for </span>ActorGuard&lt;A&gt; {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
         f.debug_struct(<span class="string">&quot;ActorGuard&lt;_&gt;&quot;</span>)
-            .field(<span class="string">&quot;inner&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;UnsafeCell&lt;Actor&gt;&quot;</span>)
+            .field(<span class="string">&quot;inner&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;Arc&lt;UnsafeCell&lt;Actor&gt;&gt;&quot;</span>)
             .field(<span class="string">&quot;sealed&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.sealed)
             .finish()
     }

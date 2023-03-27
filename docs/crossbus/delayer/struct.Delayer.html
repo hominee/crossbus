@@ -10,7 +10,7 @@ satisfied.</p>
 ) -&gt; Self</h4></section><span class="item-info"><div class="stab portability">Available on <strong>crate feature <code>time</code></strong> only.</div></span></summary><div class="docblock"><p>deliver the message with specified <code>delay</code> duration</p>
 <p>feature <strong><code>time</code></strong> must be enabled
 and the <a href="../time/trait.Timing.html" title="trait crossbus::time::Timing">Timing</a> implementation
-is required with which the actor can known
+is required with which the actor can know
 the time</p>
 <p>NOTE that the delayed duration is NO LESS than
 <code>delay</code> you specified, and is within minor deviation</p>
@@ -24,7 +24,7 @@ and it can be used as <code>Messager</code></p>
 ) -&gt; Self</h4></section><span class="item-info"><div class="stab portability">Available on <strong>crate feature <code>time</code></strong> only.</div></span></summary><div class="docblock"><p>periodically deliver the message to its destination,</p>
 <p>feature <strong><code>time</code></strong> must be enabled
 and the <a href="../time/trait.Timing.html" title="trait crossbus::time::Timing">Timing</a> implementation
-is required with which the actor can known
+is required with which the actor can know
 the time</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.from_fn" class="method"><a class="srclink rightside" href="../../src/crossbus/delayer.rs.html#255-267">source</a><h4 class="code-header">pub fn <a href="#method.from_fn" class="fn">from_fn</a>&lt;F&gt;(message: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;A::<a class="associatedtype" href="../actor/trait.Actor.html#associatedtype.Message" title="type crossbus::actor::Actor::Message">Message</a>&gt;, delay: F) -&gt; Self<span class="where fmt-newline">where
     F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.FnMut.html" title="trait core::ops::function::FnMut">FnMut</a>(<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut A</a>, &amp;mut <a class="struct" href="../context/struct.Context.html" title="struct crossbus::context::Context">Context</a>&lt;A&gt;, &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/task/wake/struct.Context.html" title="struct core::task::wake::Context">CoreContext</a>&lt;'_&gt;) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/task/poll/enum.Poll.html" title="enum core::task::poll::Poll">Poll</a>&lt;<a class="enum" href="enum.Indicator.html" title="enum crossbus::delayer::Indicator">Indicator</a>&lt;A::<a class="associatedtype" href="../actor/trait.Actor.html#associatedtype.Message" title="type crossbus::actor::Actor::Message">Message</a>&gt;&gt; + 'static + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,</span></h4></section></summary><div class="docblock"><p>use a function/Clousre as condition

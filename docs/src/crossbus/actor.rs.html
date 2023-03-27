@@ -271,6 +271,9 @@
 <a href="#271" id="271">271</a>
 <a href="#272" id="272">272</a>
 <a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
 </pre><pre class="rust"><code><span class="doccomment">//! An abstraction for a computational entity
 //!
 </span><span class="kw">use </span>core::{
@@ -341,12 +344,12 @@
 
 <span class="kw">static </span>HANDLECOUNT: AtomicUsize = AtomicUsize::new(<span class="number">1</span>);
 
-<span class="doccomment">/// An unique identity
+<span class="doccomment">/// An unique identifier
 ///
 /// **NOTE** that if the inner id is `0`
 /// it means that the returned
-/// handle is not valid, and the
-/// corresponding future not spawned
+/// handle is **INVALID**, and the
+/// corresponding task not spawned
 </span><span class="attr">#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 </span><span class="kw">pub struct </span>Handle(usize);
 
@@ -518,7 +521,10 @@
     /// is returned
     /// and actor will be stopped if `Resume` is not returned
     /// when it is in stopping phase
-    </span><span class="kw">fn </span>state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _ctx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) -&gt; ActingState {
+    ///
+    /// Real-Time control or more elaborated
+    /// execution could be achieved right here
+    </span><span class="kw">fn </span>state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="self">Self</span>&gt;) -&gt; ActingState {
         ActingState::Continue
     }
 
