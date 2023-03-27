@@ -43,7 +43,7 @@ use core::{
 use futures_core::stream;
 
 #[derive(Debug)]
-struct Summer {
+struct Sum {
     sum: i32,
     handle: Option<Handle>,
 
@@ -125,7 +125,7 @@ impl stream::Stream for St {
     }
 }
 
-impl Actor for Summer {
+impl Actor for Sum {
     type Message = ();
 
     fn create(_: &mut Context<Self>) -> Self {
@@ -184,7 +184,7 @@ impl Actor for Summer {
 
 use crossbus::stream::{StreamState, StreamingState};
 
-impl Stream<Num> for Summer {
+impl Stream<Num> for Sum {
     fn started(&mut self, _: &mut Context<Self>) {
         let now = get_now();
         // the stream is started
@@ -269,7 +269,7 @@ fn test_stream() {
     }
     #[crossbus::main(runtime = tokio)]
     async fn main() {
-        let (addr, _) = Summer::start();
+        let (addr, _) = Sum::start();
     }
     main();
 }
@@ -287,7 +287,7 @@ fn test_stream() {
     }
     #[crossbus::main(runtime = async-std)]
     async fn main() {
-        let (addr, _) = Summer::start();
+        let (addr, _) = Sum::start();
     }
     main();
 }
@@ -304,7 +304,7 @@ fn test_stream() {
     }
     #[crossbus::main(runtime = wasm32)]
     async fn main() {
-        let (addr, _) = Summer::start();
+        let (addr, _) = Sum::start();
     }
     main();
 }

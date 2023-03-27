@@ -1,13 +1,13 @@
 use crossbus::prelude::*;
 
-struct Summer {
+struct Sum {
     item: u128,
 }
 
 #[derive(Debug, Message)]
 struct Fibo(u32);
 
-impl Actor for Summer {
+impl Actor for Sum {
     type Message = Fibo;
 
     fn create(_: &mut Context<Self>) -> Self {
@@ -52,7 +52,7 @@ fn fibo(num: u32) -> Result<u128, String> {
 #[crossbus::main(runtime = async-std)]
 pub async fn main() {
     simple_logger::init_with_level(log::Level::Debug).unwrap();
-    let (addr, _) = Summer::start();
+    let (addr, _) = Sum::start();
     let sender = addr.sender();
     sender.send(Fibo(7)).unwrap();
 }
@@ -62,7 +62,7 @@ pub async fn main() {
 #[crossbus::main(runtime = tokio)]
 pub async fn main() {
     simple_logger::init_with_level(log::Level::Debug).unwrap();
-    let (addr, _) = Summer::start();
+    let (addr, _) = Sum::start();
     let sender = addr.sender();
     sender.send(Fibo(7)).unwrap();
 }

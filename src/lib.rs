@@ -17,12 +17,12 @@
 //!   Last but not least, even a bare-bone [noop-waker executor](https://docs.rs/futures-task/latest/futures_task/fn.noop_waker.html)
 //!   can do.
 //!
-//!   runtime-located features like `concurrency`, `network` and `I/O`
+//!   runtime-located features like `concurrency` and `I/O`
 //!   are up to implementor.
 //!
 //! - **Bare-Metal Compatible**
 //!
-//!   crossbus links to no system libraries, no libc,
+//!   crossbus links to no std library, no system libraries, no libc,
 //!   and a few upstream libraries
 //!   enbale you run rust code on bare metal.
 //!

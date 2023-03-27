@@ -2,7 +2,7 @@
 
 use crossbus::{actor::Actor, context::Context, message::Message};
 
-struct Summer {
+struct Sum {
     sum: i32,
 }
 
@@ -10,7 +10,7 @@ struct Summer {
 struct Num(i32);
 impl Message for Num {}
 
-impl Actor for Summer {
+impl Actor for Sum {
     type Message = Num;
 
     fn create(_: &mut Context<Self>) -> Self {
@@ -38,7 +38,7 @@ fn test_routine() {
     Runtime::block_on(async {
         log::debug!("use tokio runtime");
         let mut ctx = Context::new();
-        let act: Summer = Actor::create(&mut ctx);
+        let act: Sum = Actor::create(&mut ctx);
         let reg = ActorRegister::new(act);
         let actor_guard = Register::push(reg);
         let addr = ctx.address();
@@ -72,7 +72,7 @@ fn test_routine() {
     Runtime::block_on(async {
         log::debug!("use async std runtime");
         let mut ctx = Context::new();
-        let act: Summer = Actor::create(&mut ctx);
+        let act: Sum = Actor::create(&mut ctx);
         let reg = ActorRegister::new(act);
         let actor_guard = Register::push(reg);
         let addr = ctx.address();
@@ -106,7 +106,7 @@ fn test_routine() {
     let _ = Runtime::spawn_local(async {
         log::debug!("use wasm runtime");
         let mut ctx = Context::new();
-        let act: Summer = Actor::create(&mut ctx);
+        let act: Sum = Actor::create(&mut ctx);
         let reg = ActorRegister::new(act);
         let actor_guard = Register::push(reg);
         let addr = ctx.address();

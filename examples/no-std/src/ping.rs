@@ -1,14 +1,14 @@
 use cortex_m_semihosting::hprintln;
 use crossbus::prelude::*;
 
-struct Summer {
+struct Sum {
     sum: i32,
 }
 
 #[derive(Debug, Message)]
 struct Ping(i32);
 
-impl Actor for Summer {
+impl Actor for Sum {
     type Message = Ping;
 
     fn create(_: &mut Context<Self>) -> Self {
@@ -28,7 +28,7 @@ impl Actor for Summer {
 
 pub async fn run() {
     async fn run() {
-        let (addr, _) = Summer::start();
+        let (addr, _) = Sum::start();
         let sender = addr.sender();
         sender.send(Ping(3)).unwrap();
         sender.send(Ping(7)).unwrap();

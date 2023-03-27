@@ -1,7 +1,7 @@
 use crossbus::prelude::*;
 use wasm_bindgen::JsCast;
 
-struct Summer;
+struct Sum;
 
 #[derive(Debug, Message)]
 enum Msg {
@@ -9,7 +9,7 @@ enum Msg {
     Fibo(u32),
 }
 
-impl Actor for Summer {
+impl Actor for Sum {
     type Message = Msg;
 
     fn create(_: &mut Context<Self>) -> Self {
@@ -87,7 +87,7 @@ fn fibo(num: u32) -> Result<u128, String> {
 
 pub async fn run(num: u32, typ: &'static str) {
     async fn run(num: u32, typ: &'static str) {
-        let (addr, _) = Summer::start();
+        let (addr, _) = Sum::start();
         let sender = addr.sender();
         match typ {
             "ping" => {

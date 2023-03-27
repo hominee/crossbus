@@ -10,14 +10,14 @@ use cortex_m_semihosting::hprintln;
 use alloc::string::String;
 use crossbus::prelude::*;
 
-struct Summer {
+struct Sum {
     item: u128,
 }
 
 #[derive(Debug, Message)]
 struct Fibo(u32);
 
-impl Actor for Summer {
+impl Actor for Sum {
     type Message = Fibo;
 
     fn create(_: &mut Context<Self>) -> Self {
@@ -63,7 +63,7 @@ fn fibo(num: u32) -> Result<u128, String> {
 pub async fn run() {
     async fn run() {
         //simple_logger::init_with_level(log::Level::Debug).unwrap();
-        let (addr, _) = Summer::start();
+        let (addr, _) = Sum::start();
         let sender = addr.sender();
         sender.send(Fibo(7)).unwrap();
     }

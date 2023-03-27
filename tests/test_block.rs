@@ -28,7 +28,7 @@ use core::{
 use futures_core::stream;
 
 #[derive(Debug)]
-struct Summer {
+struct Sum {
     sum: i32,
     handle: Option<Handle>,
     swith_block: bool,
@@ -48,7 +48,7 @@ enum Order {
 #[derive(Debug)]
 struct Bloc(f32);
 
-impl Actor for Summer {
+impl Actor for Sum {
     type Message = Order;
 
     fn create(ctx: &mut Context<Self>) -> Self {
@@ -122,7 +122,7 @@ impl Actor for Summer {
     fn stopped(&mut self, ctx: &mut Context<Self>) {}
 }
 
-impl Blocking<Summer> for Summer {
+impl Blocking<Sum> for Sum {
     fn finished(&mut self, ctx: &mut Context<Self>) {
         let now = common::get_now();
         log::info!(
@@ -168,7 +168,7 @@ fn test_block() {
 
     #[crossbus::main(runtime = tokio)]
     async fn main() {
-        let _ = Summer::start();
+        let _ = Sum::start();
     }
     main();
 }
@@ -187,7 +187,7 @@ fn test_block() {
 
     #[crossbus::main(runtime = async-std)]
     async fn main() {
-        let _ = Summer::start();
+        let _ = Sum::start();
     }
     main();
 }
@@ -205,7 +205,7 @@ fn test_block() {
     }
     #[crossbus::main(runtime = wasm32)]
     async fn main() {
-        let _ = Summer::start();
+        let _ = Sum::start();
     }
     main();
 }
