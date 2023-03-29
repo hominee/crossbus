@@ -1,3 +1,0 @@
-(function() {var implementors = {
-"crossbus":[["impl&lt;M: <a class=\"trait\" href=\"crossbus/message/trait.Message.html\" title=\"trait crossbus::message::Message\">Message</a>&gt; Stream for <a class=\"struct\" href=\"crossbus/address/struct.Receiver.html\" title=\"struct crossbus::address::Receiver\">Receiver</a>&lt;M&gt;"]]
-};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

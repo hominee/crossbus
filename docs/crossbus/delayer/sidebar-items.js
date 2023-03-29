@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["DelayerState","DelayingState","Indicator"],"struct":["Delayer"],"trait":["Delaying"]};

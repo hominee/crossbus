@@ -1,0 +1,19 @@
+[book]
+authors = ["hominee"]
+language = "en"
+multilingual = false
+src = "src"
+title = "CrossBus Dev Blog"
+
+[build]
+build-dir = "docs"
+create-missing = true
+use-default-preprocessors = true
+
+[output.html.fold]
+enable = true
+level = 0
+
+[output.html.playground]
+runnable = true
+

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["clear_timeout","set_timeout","sleep"],"struct":["WasmTimeOut"]};

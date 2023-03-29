@@ -1,3 +1,0 @@
-(function() {var implementors = {
-"crossbus":[["impl&lt;A: <a class=\"trait\" href=\"crossbus/actor/trait.Actor.html\" title=\"trait crossbus::actor::Actor\">Actor</a>&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/ops/deref/trait.DerefMut.html\" title=\"trait core::ops::deref::DerefMut\">DerefMut</a> for <a class=\"struct\" href=\"crossbus/register/struct.ActorGuard.html\" title=\"struct crossbus::register::ActorGuard\">ActorGuard</a>&lt;A&gt;"]]
-};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

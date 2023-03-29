@@ -5,7 +5,7 @@ development.
 
 There are three types of small demos presented :
 - `ping`: send some numbers to actor and get their sum. 
-- `fibonacci`: send the _n_-th  term of the Fibonacci sequence.
+- `fibonacci`: send and get the _n_-th  term of the Fibonacci sequence.
 - `ring`: loop a message in a _n_ actor-linked cycle for _m_ rounds.
 
 And the [no-std](https://github.com/hominee/crossbus/tree/master/examples/no-std) folder is a no-std version of the above three projects.

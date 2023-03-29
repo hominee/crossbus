@@ -1,0 +1,397 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CrossBus Dev Blog</title>
+        <meta name="robots" content="noindex" />
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item affix "><li class="part-title">Latest</li><li class="chapter-item "><a href="post/announcing-a-new-runtime-less-platform-less-actor-computing-model.html"><strong aria-hidden="true">1.</strong> Latest Acticle</a></li><li class="chapter-item affix "><li class="part-title">Posts</li><li class="chapter-item "><a href="post/content.html"><strong aria-hidden="true">2.</strong> Content</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="post/announcing-a-new-runtime-less-platform-less-actor-computing-model.html"><strong aria-hidden="true">2.1.</strong> announcing a new runtime less platform less actor computing model</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">CrossBus Dev Blog</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div style="break-before: page; page-break-before: always;"></div><h1 id="crossbus-a-new-runtime-less-platform-less-actor-computing-model"><a class="header" href="#crossbus-a-new-runtime-less-platform-less-actor-computing-model">CrossBus a New Runtime Less Platform Less Actor Computing Model</a></h1>
+<p>Hello, Rustaceans!</p>
+<p>after months' work on this project, the first version of <a href="https://github.com/hominee/crossbus">crossbus</a> is out. A Rust library for Platform-less Runtime-less Actor-based Computing, an implementation of Actor Computing Model, with the concept that</p>
+<ul>
+<li>
+<p><strong>Runtime-Less</strong></p>
+<p>crossbus neither provides runtime for downstream app execution, nor accesses the system interface. Going Runtime less doesn't mean execution without runtime, but more precisely, no built-in runtime, but allow any runtime.</p>
+</li>
+<li>
+<p><strong>libstd-free and Bare-Metal Compatible</strong></p>
+<p>links to no std library, no system libraries, no libc, and a few upstream libraries.</p>
+<p>All crossbus need to run on a bare metal is a allocator. (see <a href="https://github.com/hominee/crossbus/tree/master/examples/no-std">example</a>)</p>
+</li>
+<li>
+<p><strong>Platform-less by Runtime-less</strong></p>
+<p>bypass the limitation of runtime implementation which often relies on a specific platform or operating system abstraction, crossbus can go platform-less.</p>
+</li>
+<li>
+<p><strong>Future-oriented Routine and Events</strong></p>
+<p>crossbus defines a set of types and traits to allow asynchronous tasks manipulation, actor communication, message handling, context interaction and etc all are asynchronous. That means you can run a future on a bare metal</p>
+</li>
+<li>
+<p><strong>Real-time Execution Control</strong></p>
+<p>taking the advantage of the design of future routine, each poll and events alongside can be intercepted for each spawned task during execution, with which more execution control is possible.</p>
+</li>
+</ul>
+<p>Currently crossbus is in its alpha version, all APIs and architecture is not stable yet, and evolves very quickly.</p>
+<p>to get a taste of crossbus, you can check out the <a href="https://github.com/hominee/crossbus/tree/master/examples">examples</a> which demonstrates how to use crossbus in std/ no-std/ web-assembly/ etc.</p>
+<p>Feel Free to Contribute to this repository! All issues / bugs-report / feature-request / etc are welcome!</p>
+<h2 id="possible-questions-and-answers"><a class="header" href="#possible-questions-and-answers">Possible Questions and Answers</a></h2>
+<ul>
+<li>
+<p>why create crossbus</p>
+<p>this is the most natural and obvious question, I guess, about crossbus,<br />
+why not use some frameworks like <code>actix</code> <code>rotor</code> <code>go-actor</code> or <code>orleans</code>, they are mature and have rich ecosystem? 
+besides the features mentioned above, crossbus is aimed at extending actor-based computing to a lower level with more compatibility. </p>
+</li>
+<li>
+<p>why split off runtime</p>
+<p>it could be the most obvious question after the first, most of frameworks 
+built upon some kind of runtime or targeting for certain runtime .
+why crossbus take a different road?</p>
+<p>Imagine a scenario that you want certain functionality of a project,
+but when looking at 
+the document/ source code of the project, it requires a
+specific runtime. and in order to use it the integration either </p>
+<ul>
+<li>change my current runtime (change a lot of stuff, not a good idea)</li>
+<li>set up it as a service and access it via network ( more complex )</li>
+<li>compile it into dynamic/static library and load/link it ( most we do )</li>
+<li>split the crate features off the runtime </li>
+</ul>
+<p>the last option seems better, right? 
+benefiting from this, more limits can be pushed :</p>
+<ul>
+<li>less dependent on developing platform</li>
+<li>less code redundancy and complexity</li>
+<li>more compatible and efficient</li>
+</ul>
+</li>
+<li>
+<p>possible application of crossbus</p>
+<p>with the help of powerful actor computing model with lower level and more compatible support, there are some potentially fields:</p>
+<ul>
+<li>web assembly</li>
+<li>operating system development</li>
+<li>embedded development	</li>
+<li>game development</li>
+<li>IoT </li>
+<li>web infrastructure </li>
+</ul>
+</li>
+<li>
+<p>Is it a defeater to shift runtime implements to downstream?</p>
+<p>Shifting the responsibility of runtime implement to user seems overwhelming.
+But most of time, we don't need a elaborated or luxury runtime like tokio or async-std, or in embedded development, there is no such an runtime for us, this is where crossbus make a difference, some lite executor like <a href="https://docs.rs/futures-executor">futures-executor</a>, <a href="https://docs.rs/async-executor">async-executor</a> etc also work for crossbus.
+Moreover, in practice, it doesn't change the way you use runtime! On the contrary, offers more choices and more freedom to the user with cost of some line of code.</p>
+<p>you don't touch runtime when you build a wasm app, good, just use crossbus directly and don't do that neither. you like third-party's runtime like tokio, okay, just build and pass it before run crossbus. you use it in a lower level or a less compatible environment/ device where there is no runtime available. fine, use <a href="https://docs.rs/futures-executor">futures-executor</a> or its fine-tuned version will do.</p>
+<p>Last but not least, even a bare-bone <a href="https://docs.rs/futures-task/latest/futures_task/fn.noop_waker.html">noop-waker executor</a> can do.</p>
+</li>
+<li>
+<p>Is crossbus a completeness implement of actor model</p>
+<p>the short answer is almost but not complete. Crossbus implement 
+almost all features. when an actor gets started, it can make local 
+decisions, create more actors, send more messages, and determine 
+how to respond to the next message received.
+some known incompleteness, so far, is runtime isolation.
+crossbus assumes user use a global runtime which specified
+by user to execute tasks when all business logic set up.</p>
+</li>
+<li>
+<p>how to explicitly handle asynchronous task with crossbus</p>
+<p>suppose you wanna run an async function: </p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn run() {
+	// do stuff here
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>you can </p>
+<ul>
+<li>convert it into <a href="https://docs.rs/crossbus/latest/crossbus/actor/trait.Future.html">actor future</a> with <a href="https://docs.rs/crossbus/latest/crossbus/actor/struct.Localizer.html">Localizer</a> then spawn it with <a href="https://docs.rs/crossbus/latest/crossbus/context/struct.Context.html#method.spawn">Context::spawn</a></li>
+<li>or more directly, use <a href="https://docs.rs/crossbus/latest/crossbus/context/struct.Context.html#method.send_future">Context::send_future</a></li>
+</ul>
+<p>for a more general type like <a href="https://docs.rs/crossbus/latest/crossbus/stream/trait.Stream.html"><code>Stream</code></a>, <a href="https://docs.rs/crossbus/latest/crossbus/message/trait.MStream.html"><code>Message Stream</code></a>, <a href="https://docs.rs/crossbus/latest/crossbus/delayer/trait.Delaying.html"><code>Delayed Timer/ Message</code></a> or <a href="https://docs.rs/crossbus/latest/crossbus/blocker/trait.Blocking.html"><code>Blocking wait message</code></a>,
+crossbus has native support for them, you can just follow <a href="https://docs.rs/crossbus">the document</a> or see <a href="https://github.com/hominee/crossbus/tree/master/tests">the integration tests</a> as a reference </p>
+</li>
+</ul>
+<p>lastly, have a good time and enjoy crossbus!</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="content"><a class="header" href="#content">Content</a></h1>
+<p>All posted article:</p>
+<ul>
+<li><a href="post/./announcing-a-new-runtime-less-platform-less-actor-computing-model.html">announcing a new runtime less platform less actor computing model</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="crossbus-a-new-runtime-less-platform-less-actor-computing-model-1"><a class="header" href="#crossbus-a-new-runtime-less-platform-less-actor-computing-model-1">CrossBus a New Runtime Less Platform Less Actor Computing Model</a></h1>
+<p>Hello, Rustaceans!</p>
+<p>after months' work on this project, the first version of <a href="https://github.com/hominee/crossbus">crossbus</a> is out. A Rust library for Platform-less Runtime-less Actor-based Computing, an implementation of Actor Computing Model, with the concept that</p>
+<ul>
+<li>
+<p><strong>Runtime-Less</strong></p>
+<p>crossbus neither provides runtime for downstream app execution, nor accesses the system interface. Going Runtime less doesn't mean execution without runtime, but more precisely, no built-in runtime, but allow any runtime.</p>
+</li>
+<li>
+<p><strong>libstd-free and Bare-Metal Compatible</strong></p>
+<p>links to no std library, no system libraries, no libc, and a few upstream libraries.</p>
+<p>All crossbus need to run on a bare metal is a allocator. (see <a href="https://github.com/hominee/crossbus/tree/master/examples/no-std">example</a>)</p>
+</li>
+<li>
+<p><strong>Platform-less by Runtime-less</strong></p>
+<p>bypass the limitation of runtime implementation which often relies on a specific platform or operating system abstraction, crossbus can go platform-less.</p>
+</li>
+<li>
+<p><strong>Future-oriented Routine and Events</strong></p>
+<p>crossbus defines a set of types and traits to allow asynchronous tasks manipulation, actor communication, message handling, context interaction and etc all are asynchronous. That means you can run a future on a bare metal</p>
+</li>
+<li>
+<p><strong>Real-time Execution Control</strong></p>
+<p>taking the advantage of the design of future routine, each poll and events alongside can be intercepted for each spawned task during execution, with which more execution control is possible.</p>
+</li>
+</ul>
+<p>Currently crossbus is in its alpha version, all APIs and architecture is not stable yet, and evolves very quickly.</p>
+<p>to get a taste of crossbus, you can check out the <a href="https://github.com/hominee/crossbus/tree/master/examples">examples</a> which demonstrates how to use crossbus in std/ no-std/ web-assembly/ etc.</p>
+<p>Feel Free to Contribute to this repository! All issues / bugs-report / feature-request / etc are welcome!</p>
+<h2 id="possible-questions-and-answers-1"><a class="header" href="#possible-questions-and-answers-1">Possible Questions and Answers</a></h2>
+<ul>
+<li>
+<p>why create crossbus</p>
+<p>this is the most natural and obvious question, I guess, about crossbus,<br />
+why not use some frameworks like <code>actix</code> <code>rotor</code> <code>go-actor</code> or <code>orleans</code>, they are mature and have rich ecosystem? 
+besides the features mentioned above, crossbus is aimed at extending actor-based computing to a lower level with more compatibility. </p>
+</li>
+<li>
+<p>why split off runtime</p>
+<p>it could be the most obvious question after the first, most of frameworks 
+built upon some kind of runtime or targeting for certain runtime .
+why crossbus take a different road?</p>
+<p>Imagine a scenario that you want certain functionality of a project,
+but when looking at 
+the document/ source code of the project, it requires a
+specific runtime. and in order to use it the integration either </p>
+<ul>
+<li>change my current runtime (change a lot of stuff, not a good idea)</li>
+<li>set up it as a service and access it via network ( more complex )</li>
+<li>compile it into dynamic/static library and load/link it ( most we do )</li>
+<li>split the crate features off the runtime </li>
+</ul>
+<p>the last option seems better, right? 
+benefiting from this, more limits can be pushed :</p>
+<ul>
+<li>less dependent on developing platform</li>
+<li>less code redundancy and complexity</li>
+<li>more compatible and efficient</li>
+</ul>
+</li>
+<li>
+<p>possible application of crossbus</p>
+<p>with the help of powerful actor computing model with lower level and more compatible support, there are some potentially fields:</p>
+<ul>
+<li>web assembly</li>
+<li>operating system development</li>
+<li>embedded development	</li>
+<li>game development</li>
+<li>IoT </li>
+<li>web infrastructure </li>
+</ul>
+</li>
+<li>
+<p>Is it a defeater to shift runtime implements to downstream?</p>
+<p>Shifting the responsibility of runtime implement to user seems overwhelming.
+But most of time, we don't need a elaborated or luxury runtime like tokio or async-std, or in embedded development, there is no such an runtime for us, this is where crossbus make a difference, some lite executor like <a href="https://docs.rs/futures-executor">futures-executor</a>, <a href="https://docs.rs/async-executor">async-executor</a> etc also work for crossbus.
+Moreover, in practice, it doesn't change the way you use runtime! On the contrary, offers more choices and more freedom to the user with cost of some line of code.</p>
+<p>you don't touch runtime when you build a wasm app, good, just use crossbus directly and don't do that neither. you like third-party's runtime like tokio, okay, just build and pass it before run crossbus. you use it in a lower level or a less compatible environment/ device where there is no runtime available. fine, use <a href="https://docs.rs/futures-executor">futures-executor</a> or its fine-tuned version will do.</p>
+<p>Last but not least, even a bare-bone <a href="https://docs.rs/futures-task/latest/futures_task/fn.noop_waker.html">noop-waker executor</a> can do.</p>
+</li>
+<li>
+<p>Is crossbus a completeness implement of actor model</p>
+<p>the short answer is almost but not complete. Crossbus implement 
+almost all features. when an actor gets started, it can make local 
+decisions, create more actors, send more messages, and determine 
+how to respond to the next message received.
+some known incompleteness, so far, is runtime isolation.
+crossbus assumes user use a global runtime which specified
+by user to execute tasks when all business logic set up.</p>
+</li>
+<li>
+<p>how to explicitly handle asynchronous task with crossbus</p>
+<p>suppose you wanna run an async function: </p>
+<pre><pre class="playground"><code class="language-rust no_run">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn run() {
+	// do stuff here
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>you can </p>
+<ul>
+<li>convert it into <a href="https://docs.rs/crossbus/latest/crossbus/actor/trait.Future.html">actor future</a> with <a href="https://docs.rs/crossbus/latest/crossbus/actor/struct.Localizer.html">Localizer</a> then spawn it with <a href="https://docs.rs/crossbus/latest/crossbus/context/struct.Context.html#method.spawn">Context::spawn</a></li>
+<li>or more directly, use <a href="https://docs.rs/crossbus/latest/crossbus/context/struct.Context.html#method.send_future">Context::send_future</a></li>
+</ul>
+<p>for a more general type like <a href="https://docs.rs/crossbus/latest/crossbus/stream/trait.Stream.html"><code>Stream</code></a>, <a href="https://docs.rs/crossbus/latest/crossbus/message/trait.MStream.html"><code>Message Stream</code></a>, <a href="https://docs.rs/crossbus/latest/crossbus/delayer/trait.Delaying.html"><code>Delayed Timer/ Message</code></a> or <a href="https://docs.rs/crossbus/latest/crossbus/blocker/trait.Blocking.html"><code>Blocking wait message</code></a>,
+crossbus has native support for them, you can just follow <a href="https://docs.rs/crossbus">the document</a> or see <a href="https://github.com/hominee/crossbus/tree/master/tests">the integration tests</a> as a reference </p>
+</li>
+</ul>
+<p>lastly, have a good time and enjoy crossbus!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+    </body>
+</html>
