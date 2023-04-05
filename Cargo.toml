@@ -1,6 +1,6 @@
 [package]
 name = "crossbus"
-version = "0.0.5-a"
+version = "0.0.6-a"
 edition = "2021"
 license = "MIT"
 authors = ["hominee"]

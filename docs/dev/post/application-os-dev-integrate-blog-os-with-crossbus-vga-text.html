@@ -171,9 +171,9 @@ you'd better take a look beforehand.</p>
 <p>Here represents a simple illustration :</p>
 <pre><code>actor::create --&gt; ActorRegister --&gt; push to global static Register --&gt; dropped when closed
 </code></pre>
-<h3 id="details"><a class="header" href="#details">Details</a></h3>
+<h3 id="changes"><a class="header" href="#changes">Changes</a></h3>
 <ul>
-<li>Switch to static Register instead of lazy_static</li>
+<li>Switch to static Register instead of lazy_static / spinlocks</li>
 </ul>
 <p>recall that the blog os defines a glocal <code>Writer</code> with <code>lazy_static</code> 
 and guarded with <code>spin::Mutex</code></p>
@@ -189,8 +189,17 @@ and guarded with <code>spin::Mutex</code></p>
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>with crossbus, you don't have to worry about static / lock, or some stuff 
-like these, just do the same:</p>
+<p>with crossbus, you </p>
+<ul>
+<li>
+<p>don't have to worry about static / lock, or some stuff like that;</p>
+</li>
+<li>
+<p>access any type implemented trait <code>Actor</code> with global static mutable/sharing reference; </p>
+</li>
+</ul>
+<h3 id="details"><a class="header" href="#details">Details</a></h3>
+<p>So the dependencies <code>spin</code> or <code>lazy_static</code> is not necessary here:</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {

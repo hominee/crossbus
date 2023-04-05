@@ -35,8 +35,8 @@ Here represents a simple illustration :
 actor::create --> ActorRegister --> push to global static Register --> dropped when closed
 ```
 
-### Details 
-- Switch to static Register instead of lazy_static
+### Changes 
+- Switch to static Register instead of lazy_static / spinlocks
 
 recall that the blog os defines a glocal `Writer` with `lazy_static` 
 and guarded with `spin::Mutex`
@@ -50,8 +50,16 @@ lazy_static! {
 }
 ```
 
-with crossbus, you don't have to worry about static / lock, or some stuff 
-like these, just do the same:
+with crossbus, you 
+
+- don't have to worry about static / lock, or some stuff like that;
+
+- access any type implemented trait `Actor` with global static mutable/sharing reference; 
+
+### Details 
+
+So the dependencies `spin` or `lazy_static` is not necessary here:
+
 ```rust 
 // define the message
 pub struct Msg(String);
