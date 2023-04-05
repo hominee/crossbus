@@ -1,0 +1,19 @@
+[package]
+name = "vga-text"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+bootloader = "0.9.8"
+volatile = "0.2.6"
+emballoc = "0.1.2"
+crossbus = { path = "../../..", version = "0.0.5-a", features = [] }
+
+# with crossbus the following crates are not necessary:
+
+#spin = "0.5.2"
+
+#[dependencies.lazy_static]
+#version = "1.0"
+#features = ["spin_no_std"]

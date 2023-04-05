@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item affix "><li class="part-title">Latest</li><li class="chapter-item "><a href="post/announcing-a-new-runtime-less-platform-less-actor-computing-model.html"><strong aria-hidden="true">1.</strong> Latest Acticle</a></li><li class="chapter-item affix "><li class="part-title">Posts</li><li class="chapter-item "><a href="post/content.html"><strong aria-hidden="true">2.</strong> Content</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="post/announcing-a-new-runtime-less-platform-less-actor-computing-model.html"><strong aria-hidden="true">2.1.</strong> announcing a new runtime less platform less actor computing model</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item affix "><li class="part-title">Latest</li><li class="chapter-item "><a href="post/application-os-dev-integrate-blog-os-with-crossbus-vga-text.html"><strong aria-hidden="true">1.</strong> Latest Acticle</a></li><li class="chapter-item affix "><li class="part-title">Posts</li><li class="chapter-item "><a href="post/content.html"><strong aria-hidden="true">2.</strong> Content</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="post/application-os-dev-integrate-blog-os-with-crossbus-vga-text.html"><strong aria-hidden="true">2.1.</strong> Integrate blog os with crossbus vga text</a></li><li class="chapter-item "><a href="post/announcing-a-new-runtime-less-platform-less-actor-computing-model.html"><strong aria-hidden="true">2.2.</strong> announcing a new runtime less platform less actor computing model</a></li></ol></li><li class="chapter-item "><li class="part-title">Application</li><li class="chapter-item "><a href="post/application.html"><strong aria-hidden="true">3.</strong> Introduction</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="post/application-os-dev-integrate-blog-os-with-crossbus-vga-text.html"><strong aria-hidden="true">3.1.</strong> Integrate blog os with crossbus vga text</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -135,7 +135,265 @@
 
                 <div id="content" class="content">
                     <main>
-                        <div style="break-before: page; page-break-before: always;"></div><h1 id="crossbus-a-new-runtime-less-platform-less-actor-computing-model"><a class="header" href="#crossbus-a-new-runtime-less-platform-less-actor-computing-model">CrossBus a New Runtime Less Platform Less Actor Computing Model</a></h1>
+                        <div style="break-before: page; page-break-before: always;"></div><h1 id="integrate-blog-os-with-crossbus-vga-text"><a class="header" href="#integrate-blog-os-with-crossbus-vga-text">Integrate Blog OS with CrossBus VGA Text</a></h1>
+<p>The <a href="https://os.phil-opp.com/">Blog OS</a> is a great series of source to 
+create a small operating system in rust language.</p>
+<p>And CrossBus is a lower level actor computing model compatible with 
+bare metal, can efficiently and asynchronously transmit / share data between
+components which may make a difference in OS development.</p>
+<h3 id="integration-target"><a class="header" href="#integration-target">Integration Target</a></h3>
+<p>Only the first 3 posts (by <a href="https://os.phil-opp.com/vga-text-mode/">Vga-text</a>) will be touched in the section. 
+So if you don't familiar with <a href="https://os.phil-opp.com/freestanding-rust-binary/">post-1</a> or <a href="https://os.phil-opp.com/minimal-rust-kernel/">post-2</a> 
+you'd better take a look beforehand.</p>
+<h3 id="pre-requisites"><a class="header" href="#pre-requisites">Pre-Requisites</a></h3>
+<p>Since crossbus use rust alloc crate, </p>
+<ul>
+<li>we must add <code>alloc</code> to the <code>build-std</code> field of <code>.cargo/config.toml</code>:</li>
+</ul>
+<pre><code class="language-toml">build-std = [&quot;core&quot;, &quot;compiler_builtins&quot;, &quot;alloc&quot;]
+</code></pre>
+<ul>
+<li>mark the global allocator
+<ul>
+<li>add <code>emballoc</code> to your dependencies</li>
+<li>specified the global_allocator: ``
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>   #[global_allocator]
+   static ALLOCATOR: emballoc::Allocator&lt;4096&gt; = emballoc::Allocator::new();
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="overview-of-actors-life-cycle"><a class="header" href="#overview-of-actors-life-cycle">Overview of Actor's Life Cycle</a></h3>
+<p>Here represents a simple illustration :</p>
+<pre><code>actor::create --&gt; ActorRegister --&gt; push to global static Register --&gt; dropped when closed
+</code></pre>
+<h3 id="details"><a class="header" href="#details">Details</a></h3>
+<ul>
+<li>Switch to static Register instead of lazy_static</li>
+</ul>
+<p>recall that the blog os defines a glocal <code>Writer</code> with <code>lazy_static</code> 
+and guarded with <code>spin::Mutex</code></p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>lazy_static! {
+    pub static ref WRITER: Mutex&lt;Writer&gt; = Mutex::new(Writer {
+        column_position: 0,
+        color_code: ColorCode::new(Color::Yellow, Color::Black),
+        buffer: unsafe { &amp;mut *(0xb8000 as *mut Buffer) },
+    });
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>with crossbus, you don't have to worry about static / lock, or some stuff 
+like these, just do the same:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// define the message
+pub struct Msg(String);
+
+// impl the Message trait
+impl message::Message for Msg {}
+
+impl Actor for Writer {
+    type Message = Msg;
+
+		// normally create the Writer
+    fn create(_: &amp;mut Context&lt;Self&gt;) -&gt; Self {
+        Writer {
+            column_position: 0,
+            color_code: ColorCode::new(Color::Yellow, Color::Black),
+            buffer: unsafe { &amp;mut *(0xb8000 as *mut Buffer) },
+        }
+    }
+
+    // this line is not necessary though
+    // a syntax must
+    //
+    // since we dont use an writer instance then
+    // call this method
+    fn action(&amp;mut self, _: Self::Message, _: &amp;mut Context&lt;Self&gt;) {}
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>According to the illustration above, 
+once the actor is created, you can access it as glocal static item,
+and downcast it to the original type <code>Writer</code>, and you don't 
+manually lock the <code>Writer</code> ( crossbus has assure its exclusively access)</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// mark the writer's actor id
+// used to get writer from `crossbus::Register`
+static WRITERID: AtomicUsize = AtomicUsize::new(0);
+
+// if Writer is not created
+// then create one
+if WRITERID.load(Ordering::Acquire) == 0 {
+		let (_, id) = Writer::start();
+		WRITERID.store(id, Ordering::Release);
+}
+
+// find the actor by id and
+Register::get(WRITERID.load(Ordering::Acquire))
+		.unwrap()
+		// downcast the actor as mutable reference of Writer
+		.downcast_mut::&lt;Writer, _&gt;(
+				// here pass a closure,
+				// writer is a mutable reference
+				|writer: &amp;mut Writer| {
+						// and use it write string to display
+						writer.write_fmt(args).unwrap();
+						Ok(())
+				},
+		);
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="results"><a class="header" href="#results">Results</a></h3>
+<p>go the project directory and use <code>cargo run</code>, you will see:
+<img src="post/../assets/vga-text.png" alt="vga-text" /></p>
+<h3 id="code"><a class="header" href="#code">Code</a></h3>
+<p>this is the a section of integrating blog os with crossbus,
+the full code is at <a href="https://github.com/hominee/crossbus/tree/master/examples/blog-os/vga-text">here</a> </p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="content"><a class="header" href="#content">Content</a></h1>
+<p>All posted articles:</p>
+<ul>
+<li><a href="post/./application-os-dev-integrate-blog-os-with-crossbus-vga-text.html">integrate blog os with crossbus vga text</a></li>
+<li><a href="post/./announcing-a-new-runtime-less-platform-less-actor-computing-model.html">announcing a new runtime less platform less actor computing model</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="integrate-blog-os-with-crossbus-vga-text-1"><a class="header" href="#integrate-blog-os-with-crossbus-vga-text-1">Integrate Blog OS with CrossBus VGA Text</a></h1>
+<p>The <a href="https://os.phil-opp.com/">Blog OS</a> is a great series of source to 
+create a small operating system in rust language.</p>
+<p>And CrossBus is a lower level actor computing model compatible with 
+bare metal, can efficiently and asynchronously transmit / share data between
+components which may make a difference in OS development.</p>
+<h3 id="integration-target-1"><a class="header" href="#integration-target-1">Integration Target</a></h3>
+<p>Only the first 3 posts (by <a href="https://os.phil-opp.com/vga-text-mode/">Vga-text</a>) will be touched in the section. 
+So if you don't familiar with <a href="https://os.phil-opp.com/freestanding-rust-binary/">post-1</a> or <a href="https://os.phil-opp.com/minimal-rust-kernel/">post-2</a> 
+you'd better take a look beforehand.</p>
+<h3 id="pre-requisites-1"><a class="header" href="#pre-requisites-1">Pre-Requisites</a></h3>
+<p>Since crossbus use rust alloc crate, </p>
+<ul>
+<li>we must add <code>alloc</code> to the <code>build-std</code> field of <code>.cargo/config.toml</code>:</li>
+</ul>
+<pre><code class="language-toml">build-std = [&quot;core&quot;, &quot;compiler_builtins&quot;, &quot;alloc&quot;]
+</code></pre>
+<ul>
+<li>mark the global allocator
+<ul>
+<li>add <code>emballoc</code> to your dependencies</li>
+<li>specified the global_allocator: ``
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>   #[global_allocator]
+   static ALLOCATOR: emballoc::Allocator&lt;4096&gt; = emballoc::Allocator::new();
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="overview-of-actors-life-cycle-1"><a class="header" href="#overview-of-actors-life-cycle-1">Overview of Actor's Life Cycle</a></h3>
+<p>Here represents a simple illustration :</p>
+<pre><code>actor::create --&gt; ActorRegister --&gt; push to global static Register --&gt; dropped when closed
+</code></pre>
+<h3 id="details-1"><a class="header" href="#details-1">Details</a></h3>
+<ul>
+<li>Switch to static Register instead of lazy_static</li>
+</ul>
+<p>recall that the blog os defines a glocal <code>Writer</code> with <code>lazy_static</code> 
+and guarded with <code>spin::Mutex</code></p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>lazy_static! {
+    pub static ref WRITER: Mutex&lt;Writer&gt; = Mutex::new(Writer {
+        column_position: 0,
+        color_code: ColorCode::new(Color::Yellow, Color::Black),
+        buffer: unsafe { &amp;mut *(0xb8000 as *mut Buffer) },
+    });
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>with crossbus, you don't have to worry about static / lock, or some stuff 
+like these, just do the same:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// define the message
+pub struct Msg(String);
+
+// impl the Message trait
+impl message::Message for Msg {}
+
+impl Actor for Writer {
+    type Message = Msg;
+
+		// normally create the Writer
+    fn create(_: &amp;mut Context&lt;Self&gt;) -&gt; Self {
+        Writer {
+            column_position: 0,
+            color_code: ColorCode::new(Color::Yellow, Color::Black),
+            buffer: unsafe { &amp;mut *(0xb8000 as *mut Buffer) },
+        }
+    }
+
+    // this line is not necessary though
+    // a syntax must
+    //
+    // since we dont use an writer instance then
+    // call this method
+    fn action(&amp;mut self, _: Self::Message, _: &amp;mut Context&lt;Self&gt;) {}
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>According to the illustration above, 
+once the actor is created, you can access it as glocal static item,
+and downcast it to the original type <code>Writer</code>, and you don't 
+manually lock the <code>Writer</code> ( crossbus has assure its exclusively access)</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// mark the writer's actor id
+// used to get writer from `crossbus::Register`
+static WRITERID: AtomicUsize = AtomicUsize::new(0);
+
+// if Writer is not created
+// then create one
+if WRITERID.load(Ordering::Acquire) == 0 {
+		let (_, id) = Writer::start();
+		WRITERID.store(id, Ordering::Release);
+}
+
+// find the actor by id and
+Register::get(WRITERID.load(Ordering::Acquire))
+		.unwrap()
+		// downcast the actor as mutable reference of Writer
+		.downcast_mut::&lt;Writer, _&gt;(
+				// here pass a closure,
+				// writer is a mutable reference
+				|writer: &amp;mut Writer| {
+						// and use it write string to display
+						writer.write_fmt(args).unwrap();
+						Ok(())
+				},
+		);
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="results-1"><a class="header" href="#results-1">Results</a></h3>
+<p>go the project directory and use <code>cargo run</code>, you will see:
+<img src="post/../assets/vga-text.png" alt="vga-text" /></p>
+<h3 id="code-1"><a class="header" href="#code-1">Code</a></h3>
+<p>this is the a section of integrating blog os with crossbus,
+the full code is at <a href="https://github.com/hominee/crossbus/tree/master/examples/blog-os/vga-text">here</a> </p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="crossbus-a-new-runtime-less-platform-less-actor-computing-model"><a class="header" href="#crossbus-a-new-runtime-less-platform-less-actor-computing-model">CrossBus a New Runtime Less Platform Less Actor Computing Model</a></h1>
 <p>Hello, Rustaceans!</p>
 <p>after months' work on this project, the first version of <a href="https://github.com/hominee/crossbus">crossbus</a> is out. A Rust library for Platform-less Runtime-less Actor-based Computing, an implementation of Actor Computing Model, with the concept that</p>
 <ul>
@@ -246,122 +504,141 @@ crossbus has native support for them, you can just follow <a href="https://docs.
 </li>
 </ul>
 <p>lastly, have a good time and enjoy crossbus!</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="content"><a class="header" href="#content">Content</a></h1>
-<p>All posted article:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="application"><a class="header" href="#application">Application</a></h1>
+<p>Some Possible Application and Demos of CrossBus in:</p>
 <ul>
-<li><a href="post/./announcing-a-new-runtime-less-platform-less-actor-computing-model.html">announcing a new runtime less platform less actor computing model</a></li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="crossbus-a-new-runtime-less-platform-less-actor-computing-model-1"><a class="header" href="#crossbus-a-new-runtime-less-platform-less-actor-computing-model-1">CrossBus a New Runtime Less Platform Less Actor Computing Model</a></h1>
-<p>Hello, Rustaceans!</p>
-<p>after months' work on this project, the first version of <a href="https://github.com/hominee/crossbus">crossbus</a> is out. A Rust library for Platform-less Runtime-less Actor-based Computing, an implementation of Actor Computing Model, with the concept that</p>
+<li>Operating System Development:
 <ul>
-<li>
-<p><strong>Runtime-Less</strong></p>
-<p>crossbus neither provides runtime for downstream app execution, nor accesses the system interface. Going Runtime less doesn't mean execution without runtime, but more precisely, no built-in runtime, but allow any runtime.</p>
-</li>
-<li>
-<p><strong>libstd-free and Bare-Metal Compatible</strong></p>
-<p>links to no std library, no system libraries, no libc, and a few upstream libraries.</p>
-<p>All crossbus need to run on a bare metal is a allocator. (see <a href="https://github.com/hominee/crossbus/tree/master/examples/no-std">example</a>)</p>
-</li>
-<li>
-<p><strong>Platform-less by Runtime-less</strong></p>
-<p>bypass the limitation of runtime implementation which often relies on a specific platform or operating system abstraction, crossbus can go platform-less.</p>
-</li>
-<li>
-<p><strong>Future-oriented Routine and Events</strong></p>
-<p>crossbus defines a set of types and traits to allow asynchronous tasks manipulation, actor communication, message handling, context interaction and etc all are asynchronous. That means you can run a future on a bare metal</p>
-</li>
-<li>
-<p><strong>Real-time Execution Control</strong></p>
-<p>taking the advantage of the design of future routine, each poll and events alongside can be intercepted for each spawned task during execution, with which more execution control is possible.</p>
-</li>
-</ul>
-<p>Currently crossbus is in its alpha version, all APIs and architecture is not stable yet, and evolves very quickly.</p>
-<p>to get a taste of crossbus, you can check out the <a href="https://github.com/hominee/crossbus/tree/master/examples">examples</a> which demonstrates how to use crossbus in std/ no-std/ web-assembly/ etc.</p>
-<p>Feel Free to Contribute to this repository! All issues / bugs-report / feature-request / etc are welcome!</p>
-<h2 id="possible-questions-and-answers-1"><a class="header" href="#possible-questions-and-answers-1">Possible Questions and Answers</a></h2>
-<ul>
-<li>
-<p>why create crossbus</p>
-<p>this is the most natural and obvious question, I guess, about crossbus,<br />
-why not use some frameworks like <code>actix</code> <code>rotor</code> <code>go-actor</code> or <code>orleans</code>, they are mature and have rich ecosystem? 
-besides the features mentioned above, crossbus is aimed at extending actor-based computing to a lower level with more compatibility. </p>
-</li>
-<li>
-<p>why split off runtime</p>
-<p>it could be the most obvious question after the first, most of frameworks 
-built upon some kind of runtime or targeting for certain runtime .
-why crossbus take a different road?</p>
-<p>Imagine a scenario that you want certain functionality of a project,
-but when looking at 
-the document/ source code of the project, it requires a
-specific runtime. and in order to use it the integration either </p>
-<ul>
-<li>change my current runtime (change a lot of stuff, not a good idea)</li>
-<li>set up it as a service and access it via network ( more complex )</li>
-<li>compile it into dynamic/static library and load/link it ( most we do )</li>
-<li>split the crate features off the runtime </li>
-</ul>
-<p>the last option seems better, right? 
-benefiting from this, more limits can be pushed :</p>
-<ul>
-<li>less dependent on developing platform</li>
-<li>less code redundancy and complexity</li>
-<li>more compatible and efficient</li>
+<li><a href="post/./application-os-dev-integrate-blog-os-with-crossbus-vga-text.html">Integrate blog os with crossbus vga text</a></li>
 </ul>
 </li>
-<li>
-<p>possible application of crossbus</p>
-<p>with the help of powerful actor computing model with lower level and more compatible support, there are some potentially fields:</p>
-<ul>
-<li>web assembly</li>
-<li>operating system development</li>
-<li>embedded development	</li>
-<li>game development</li>
-<li>IoT </li>
-<li>web infrastructure </li>
 </ul>
-</li>
-<li>
-<p>Is it a defeater to shift runtime implements to downstream?</p>
-<p>Shifting the responsibility of runtime implement to user seems overwhelming.
-But most of time, we don't need a elaborated or luxury runtime like tokio or async-std, or in embedded development, there is no such an runtime for us, this is where crossbus make a difference, some lite executor like <a href="https://docs.rs/futures-executor">futures-executor</a>, <a href="https://docs.rs/async-executor">async-executor</a> etc also work for crossbus.
-Moreover, in practice, it doesn't change the way you use runtime! On the contrary, offers more choices and more freedom to the user with cost of some line of code.</p>
-<p>you don't touch runtime when you build a wasm app, good, just use crossbus directly and don't do that neither. you like third-party's runtime like tokio, okay, just build and pass it before run crossbus. you use it in a lower level or a less compatible environment/ device where there is no runtime available. fine, use <a href="https://docs.rs/futures-executor">futures-executor</a> or its fine-tuned version will do.</p>
-<p>Last but not least, even a bare-bone <a href="https://docs.rs/futures-task/latest/futures_task/fn.noop_waker.html">noop-waker executor</a> can do.</p>
-</li>
-<li>
-<p>Is crossbus a completeness implement of actor model</p>
-<p>the short answer is almost but not complete. Crossbus implement 
-almost all features. when an actor gets started, it can make local 
-decisions, create more actors, send more messages, and determine 
-how to respond to the next message received.
-some known incompleteness, so far, is runtime isolation.
-crossbus assumes user use a global runtime which specified
-by user to execute tasks when all business logic set up.</p>
-</li>
-<li>
-<p>how to explicitly handle asynchronous task with crossbus</p>
-<p>suppose you wanna run an async function: </p>
-<pre><pre class="playground"><code class="language-rust no_run">
+<div style="break-before: page; page-break-before: always;"></div><h1 id="integrate-blog-os-with-crossbus-vga-text-2"><a class="header" href="#integrate-blog-os-with-crossbus-vga-text-2">Integrate Blog OS with CrossBus VGA Text</a></h1>
+<p>The <a href="https://os.phil-opp.com/">Blog OS</a> is a great series of source to 
+create a small operating system in rust language.</p>
+<p>And CrossBus is a lower level actor computing model compatible with 
+bare metal, can efficiently and asynchronously transmit / share data between
+components which may make a difference in OS development.</p>
+<h3 id="integration-target-2"><a class="header" href="#integration-target-2">Integration Target</a></h3>
+<p>Only the first 3 posts (by <a href="https://os.phil-opp.com/vga-text-mode/">Vga-text</a>) will be touched in the section. 
+So if you don't familiar with <a href="https://os.phil-opp.com/freestanding-rust-binary/">post-1</a> or <a href="https://os.phil-opp.com/minimal-rust-kernel/">post-2</a> 
+you'd better take a look beforehand.</p>
+<h3 id="pre-requisites-2"><a class="header" href="#pre-requisites-2">Pre-Requisites</a></h3>
+<p>Since crossbus use rust alloc crate, </p>
+<ul>
+<li>we must add <code>alloc</code> to the <code>build-std</code> field of <code>.cargo/config.toml</code>:</li>
+</ul>
+<pre><code class="language-toml">build-std = [&quot;core&quot;, &quot;compiler_builtins&quot;, &quot;alloc&quot;]
+</code></pre>
+<ul>
+<li>mark the global allocator
+<ul>
+<li>add <code>emballoc</code> to your dependencies</li>
+<li>specified the global_allocator: ``
+<pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>async fn run() {
-	// do stuff here
+</span>   #[global_allocator]
+   static ALLOCATOR: emballoc::Allocator&lt;4096&gt; = emballoc::Allocator::new();
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="overview-of-actors-life-cycle-2"><a class="header" href="#overview-of-actors-life-cycle-2">Overview of Actor's Life Cycle</a></h3>
+<p>Here represents a simple illustration :</p>
+<pre><code>actor::create --&gt; ActorRegister --&gt; push to global static Register --&gt; dropped when closed
+</code></pre>
+<h3 id="details-2"><a class="header" href="#details-2">Details</a></h3>
+<ul>
+<li>Switch to static Register instead of lazy_static</li>
+</ul>
+<p>recall that the blog os defines a glocal <code>Writer</code> with <code>lazy_static</code> 
+and guarded with <code>spin::Mutex</code></p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>lazy_static! {
+    pub static ref WRITER: Mutex&lt;Writer&gt; = Mutex::new(Writer {
+        column_position: 0,
+        color_code: ColorCode::new(Color::Yellow, Color::Black),
+        buffer: unsafe { &amp;mut *(0xb8000 as *mut Buffer) },
+    });
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>you can </p>
-<ul>
-<li>convert it into <a href="https://docs.rs/crossbus/latest/crossbus/actor/trait.Future.html">actor future</a> with <a href="https://docs.rs/crossbus/latest/crossbus/actor/struct.Localizer.html">Localizer</a> then spawn it with <a href="https://docs.rs/crossbus/latest/crossbus/context/struct.Context.html#method.spawn">Context::spawn</a></li>
-<li>or more directly, use <a href="https://docs.rs/crossbus/latest/crossbus/context/struct.Context.html#method.send_future">Context::send_future</a></li>
-</ul>
-<p>for a more general type like <a href="https://docs.rs/crossbus/latest/crossbus/stream/trait.Stream.html"><code>Stream</code></a>, <a href="https://docs.rs/crossbus/latest/crossbus/message/trait.MStream.html"><code>Message Stream</code></a>, <a href="https://docs.rs/crossbus/latest/crossbus/delayer/trait.Delaying.html"><code>Delayed Timer/ Message</code></a> or <a href="https://docs.rs/crossbus/latest/crossbus/blocker/trait.Blocking.html"><code>Blocking wait message</code></a>,
-crossbus has native support for them, you can just follow <a href="https://docs.rs/crossbus">the document</a> or see <a href="https://github.com/hominee/crossbus/tree/master/tests">the integration tests</a> as a reference </p>
-</li>
-</ul>
-<p>lastly, have a good time and enjoy crossbus!</p>
+<p>with crossbus, you don't have to worry about static / lock, or some stuff 
+like these, just do the same:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// define the message
+pub struct Msg(String);
+
+// impl the Message trait
+impl message::Message for Msg {}
+
+impl Actor for Writer {
+    type Message = Msg;
+
+		// normally create the Writer
+    fn create(_: &amp;mut Context&lt;Self&gt;) -&gt; Self {
+        Writer {
+            column_position: 0,
+            color_code: ColorCode::new(Color::Yellow, Color::Black),
+            buffer: unsafe { &amp;mut *(0xb8000 as *mut Buffer) },
+        }
+    }
+
+    // this line is not necessary though
+    // a syntax must
+    //
+    // since we dont use an writer instance then
+    // call this method
+    fn action(&amp;mut self, _: Self::Message, _: &amp;mut Context&lt;Self&gt;) {}
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>According to the illustration above, 
+once the actor is created, you can access it as glocal static item,
+and downcast it to the original type <code>Writer</code>, and you don't 
+manually lock the <code>Writer</code> ( crossbus has assure its exclusively access)</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// mark the writer's actor id
+// used to get writer from `crossbus::Register`
+static WRITERID: AtomicUsize = AtomicUsize::new(0);
+
+// if Writer is not created
+// then create one
+if WRITERID.load(Ordering::Acquire) == 0 {
+		let (_, id) = Writer::start();
+		WRITERID.store(id, Ordering::Release);
+}
+
+// find the actor by id and
+Register::get(WRITERID.load(Ordering::Acquire))
+		.unwrap()
+		// downcast the actor as mutable reference of Writer
+		.downcast_mut::&lt;Writer, _&gt;(
+				// here pass a closure,
+				// writer is a mutable reference
+				|writer: &amp;mut Writer| {
+						// and use it write string to display
+						writer.write_fmt(args).unwrap();
+						Ok(())
+				},
+		);
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="results-2"><a class="header" href="#results-2">Results</a></h3>
+<p>go the project directory and use <code>cargo run</code>, you will see:
+<img src="post/../assets/vga-text.png" alt="vga-text" /></p>
+<h3 id="code-2"><a class="header" href="#code-2">Code</a></h3>
+<p>this is the a section of integrating blog os with crossbus,
+the full code is at <a href="https://github.com/hominee/crossbus/tree/master/examples/blog-os/vga-text">here</a> </p>
 
                     </main>
 
