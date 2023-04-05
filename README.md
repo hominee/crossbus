@@ -69,6 +69,8 @@ is not stable yet, and evolves very quickly.**
 
 - [API Document](https://docs.rs/crossbus)
 
+- [Dev Blog](hominee.github.io/crossbus/dev/post/content.html)
+
 - [Manual Book Coming Soon]()
 
 ## Feature Flags 

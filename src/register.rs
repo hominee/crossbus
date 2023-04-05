@@ -313,12 +313,20 @@ impl ActorRegister {
         self.sealed.store(true, Ordering::Release);
         let ptr = self.inner.as_ref().get();
         let dyn_ptr = unsafe { transmute::<*mut dyn Any, &mut dyn Any>(ptr) };
-        let inner = dyn_ptr.downcast_mut::<A>();
-        match inner {
-            None => None,
+        match dyn_ptr.downcast_mut::<A>() {
+            None => {
+                self.sealed.store(false, Ordering::Release);
+                None
+            }
             Some(data) => match f(data) {
-                Ok(_) => Some(true),
-                Err(_) => Some(false),
+                Ok(_) => {
+                    self.sealed.store(false, Ordering::Release);
+                    Some(true)
+                }
+                Err(_) => {
+                    self.sealed.store(false, Ordering::Release);
+                    Some(false)
+                }
             },
         }
     }
@@ -348,4 +356,37 @@ fn test_downcast_cell() {
     drop(inner);
     assert_eq!(Arc::strong_count(&inn), 1);
     assert_eq!(Arc::weak_count(&inn), 0);
+}
+
+#[test]
+fn test_downcast_mut() {
+    extern crate alloc;
+    use crate::prelude::*;
+    use alloc::sync::Arc;
+    use core::{cell::UnsafeCell, mem::transmute};
+
+    struct Se {
+        index: usize,
+    }
+
+    enum Msg {}
+    impl message::Message for Msg {}
+
+    impl Actor for Se {
+        type Message = Msg;
+
+        fn create(ctx: &mut Context<Self>) -> Self {
+            Self { index: 0 }
+        }
+
+        fn action(&mut self, msg: Self::Message, ctx: &mut Context<Self>) {}
+    }
+
+    let se = Se { index: 3 };
+    let mut reg = ActorRegister::new(se);
+    reg.downcast_mut::<Se, _>(|se| {
+        se.index += 1;
+        Ok(())
+    });
+    assert_eq!(reg.downcast_ref::<Se>().unwrap().index, 4);
 }

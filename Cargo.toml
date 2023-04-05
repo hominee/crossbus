@@ -17,7 +17,7 @@ members = [
     "derive",
     "examples/*.rs",
 ]
-exclude = ["examples/wasm32", "examples/no-std"]
+exclude = ["examples/wasm32", "examples/no-std", "examples/blog-os"]
 
 [dependencies]
 futures-core = { version="0.3.25", default-features = false }
