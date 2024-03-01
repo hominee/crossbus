@@ -13,7 +13,7 @@ use core::{
     future::Future as CoreFuture,
     hint,
     pin::Pin,
-    sync::atomic::{AtomicBool, AtomicIsize, AtomicUsize, Ordering},
+    sync::atomic::{AtomicBool, AtomicIsize, AtomicPtr, AtomicUsize, Ordering},
     task::{Context as CoreContext, Poll},
 };
 
@@ -119,7 +119,7 @@ static QUEUENULLINIT: AtomicBool = AtomicBool::new(false);
 
 /// static mutable Reactor where store
 /// all Pairs
-static mut REACTOR: Reactor = Reactor { inner: Vec::new() };
+static REACTOR: AtomicPtr<Reactor> = AtomicPtr::new(core::ptr::null_mut::<Reactor>());
 
 /// Executor and Manager of all actors
 ///
@@ -139,7 +139,19 @@ impl Reactor {
         // pointer points a valid Reactor
         // So it is safe to de-reference the
         // underlying pointer
-        unsafe { &REACTOR }
+        //unsafe { core::ptr::addr_of!(REACTOR).as_ref().unwrap() }
+        if REACTOR.load(Ordering::Acquire).is_null() {
+            let item = Self { inner: Vec::new() };
+            let boxed = Box::new(item);
+            let box_ptr = Box::into_raw(boxed);
+            REACTOR.store(box_ptr, Ordering::Release);
+        }
+        unsafe {
+            REACTOR
+                .load(Ordering::Acquire)
+                .as_ref()
+                .expect("Reactor not availible")
+        }
     }
 
     /// push a pair to the cache queue
@@ -157,7 +169,14 @@ impl Reactor {
     // `REACTORSEAL`, any mutable actions happens
     // will trigger the guardian locked
     pub async fn as_future() {
-        unsafe { &mut REACTOR }.await
+        //unsafe { core::ptr::addr_of_mut!(REACTOR).as_mut().unwrap() }.await
+        unsafe {
+            REACTOR
+                .load(Ordering::SeqCst)
+                .as_mut()
+                .expect("Reactor not availible")
+        }
+        .await
     }
 
     /// execute an ReactingOrder
@@ -172,7 +191,7 @@ impl Reactor {
 
     /// get the length of polling futures
     pub fn len() -> usize {
-        unsafe { REACTOR.inner.len() }
+        unsafe { (*REACTOR.load(Ordering::Relaxed)).inner.len() }
     }
 
     /// process reactor cache
@@ -249,7 +268,7 @@ impl CoreFuture for Reactor {
             reset_poll_budget();
             return Poll::Ready(());
         }
-        drop(inner);
+        let _ = inner;
 
         #[cfg(all(
             not(feature = "no-std"),

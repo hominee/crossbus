@@ -48,7 +48,7 @@ pub struct Register {
 impl Register {
     /// create an instance of Register
     pub fn new() -> &'static Self {
-        unsafe { &REGISTER }
+        unsafe { core::ptr::addr_of!(REGISTER).as_ref().unwrap() }
     }
 
     /// push an actor into `REGISTER` and

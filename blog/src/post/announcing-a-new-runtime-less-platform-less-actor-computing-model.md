@@ -32,6 +32,19 @@ to get a taste of crossbus, you can check out the [examples](https://github.com/
 
 Feel Free to Contribute to this repository! All issues / bugs-report / feature-request / etc are welcome!
 
+
+## possible application of crossbus
+
+  with the help of powerful actor computing model with lower level and more compatible support, there are some potentially fields:
+    - web assembly
+    - operating system development
+    - embedded development	
+    - game development
+    - IoT 
+    - web Development 
+    - low-code platform / data-flow pipeline 
+  
+
 ## Possible Questions and Answers
 
 - why create crossbus
@@ -60,17 +73,6 @@ Feel Free to Contribute to this repository! All issues / bugs-report / feature-r
   - less dependent on developing platform
   - less code redundancy and complexity
   - more compatible and efficient
-
-- possible application of crossbus
-
-  with the help of powerful actor computing model with lower level and more compatible support, there are some potentially fields:
-    - web assembly
-    - operating system development
-    - embedded development	
-    - game development
-    - IoT 
-    - web infrastructure 
-  
 
 - Is it a defeater to shift runtime implements to downstream?
 
